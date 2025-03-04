@@ -59,6 +59,7 @@ class FakeNewsClassifier(nn.Module):
             print("First element type:", type(input_text[0]))
             
         print(input_text[0])
+        input_text = list(input_text[0])
         
         # Ensure `input_text` is a list of strings
         assert isinstance(input_text, list), "input_text must be a list of strings"
