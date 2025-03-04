@@ -2,12 +2,14 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from transformers import BertModel, BertTokenizer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
 import logging
 
 logger = logging.getLogger(__name__)
 
 class FakeNewsClassifier(nn.Module):
-    def __init__(self, num_tabular_features, bert_model_name="bert-base-uncased"):
+    def __init__(self, num_tabular_features, numerical_features, categorical_features, bert_model_name="bert-base-uncased"):
         super(FakeNewsClassifier, self).__init__()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # Load pre-trained BERT
@@ -33,22 +35,41 @@ class FakeNewsClassifier(nn.Module):
             nn.Linear(128, num_classes),  # Binary classification (fake or real)
         )
         
+        # Store feature names
+        self.numerical_features = numerical_features
+        self.categorical_features = categorical_features
+        
+        # Define preprocessor pipeline
+        self.preprocessor = ColumnTransformer([
+            ("num", StandardScaler(), numerical_features),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
+        ])
+        
         self.to(self.device)
+        
+    def preprocess_tabular(self, df):
+        """Preprocess raw tabular data into a tensor."""
+        processed_features = self.preprocessor.fit_transform(df)  # Ensure fitted before inference
+        return torch.tensor(processed_features, dtype=torch.float32).to(self.device)
 
-    def forward(self, input_ids, attention_mask, tabular_features):
-        # BERT processing
-        bert_output = self.bert(input_ids=input_ids, attention_mask=attention_mask)
-        text_embedding = bert_output.pooler_output  # [batch_size, 768]
+    def forward(self, input_text, tabular_df):
+        """Full forward pass, including text tokenization and tabular preprocessing."""
         
-        # Tabular feature processing
-        tabular_embedding = self.tabular_fc(tabular_features)  # [batch_size, 64]
+        # Preprocess tabular data
+        tabular_tensor = self.preprocess_tabular(tabular_df)
+
+        # Tokenize text and get BERT embeddings
+        encoded_input = self.tokenizer(input_text, padding=True, truncation=True, return_tensors="pt").to(self.device)
+        bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]  # Extract CLS token
         
-        # Concatenation
-        combined_features = torch.cat((text_embedding, tabular_embedding), dim=1)  # [batch_size, 768+64]
+        # Process tabular data
+        tabular_features = self.tabular_fc(tabular_tensor)
+
+        # Concatenate BERT and tabular features
+        combined_features = torch.cat((bert_output, tabular_features), dim=1)
         
         # Classification
-        output = self.classifier(combined_features)
-        return output
+        return self.classifier(combined_features)
     
     def train_model(self, dataloader, num_epochs=3):
         self.train()
@@ -58,13 +79,12 @@ class FakeNewsClassifier(nn.Module):
             total = 0
 
             for batch in dataloader:
-                input_ids = batch["input_ids"].to(self.device)
-                attention_mask = batch["attention_mask"].to(self.device)
-                tabular_features = batch["tabular_features"].to(self.device)
+                input_text = batch["input_text"].to(self.device)
+                tabular_df = batch["tabular_df"].to(self.device)
                 labels = batch["label"].to(self.device).long()  # Reshape for BCEWithLogitsLoss
 
                 self.optimizer.zero_grad()
-                outputs = self.forward(input_ids, attention_mask, tabular_features)
+                outputs = self.forward(input_text, tabular_df)
                 
                 
                 loss = self.criterion(outputs, labels)

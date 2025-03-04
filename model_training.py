@@ -13,7 +13,7 @@ import logging
 logging.basicConfig(filename='training.log', level=logging.INFO)
 
 
-def model_training(df, cache_file: str = "model/model.pkl"):
+def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
 
     # Prepare tabular and textual data
     tabular_data = prepare_data(df)
@@ -26,10 +26,10 @@ def model_training(df, cache_file: str = "model/model.pkl"):
     dataset = FakeNewsDataset(statements, tabular_data, labels)
     dataloader = DataLoader(dataset, batch_size=50, shuffle=True, num_workers=1)
     
-        # Check if cached file exists
-    if os.path.exists(cache_file):
+    # Check if cached file exists
+    if os.path.exists(cache_file) and use_cache:
         with open(cache_file, "rb") as f:
-            print("Loading cached DataFrame...")
+            print("Loading cached Model...")
             return pickle.load(f), dataset
 
     # Model initialization
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     dataset = datasets.load_dataset(dataset)
     train = pd.DataFrame(dataset["train"])
 
-    model, processed_dataset = model_training(train)
+    model, processed_dataset = model_training(train, use_cache=False)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
