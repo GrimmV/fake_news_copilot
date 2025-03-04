@@ -8,6 +8,10 @@ import torch
 import os
 import pickle
 
+import logging
+
+logging.basicConfig(filename='training.log', level=logging.INFO)
+
 
 def model_training(df, cache_file: str = "model/model.pkl"):
     # Check if cached file exists

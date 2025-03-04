@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from transformers import BertModel, BertTokenizer
+import logging
+
+logger = logging.getLogger(__name__)
 
 class FakeNewsClassifier(nn.Module):
     def __init__(self, num_tabular_features, bert_model_name="bert-base-uncased"):
@@ -77,7 +80,9 @@ class FakeNewsClassifier(nn.Module):
             
             avg_loss = total_loss / len(dataloader)
             accuracy = correct / total
-            print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {avg_loss:.4f}, Accuracy: {accuracy:.4f}")
+            epoch_info = f"Epoch [{epoch+1}/{num_epochs}], Loss: {avg_loss:.4f}, Accuracy: {accuracy:.4f}"
+            logger.info(epoch_info)
+            print(epoch_info)
     
 # Example usage
 if __name__ == "__main__":
