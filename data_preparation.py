@@ -14,7 +14,6 @@ def prepare_data(df: pd.DataFrame, cache_file: str = "processed_data.pkl", use_c
     
     print("Processing DataFrame for the first time...")
     train = df.copy()
-    train = train[train['statement'].apply(lambda x: isinstance(x, str))]
     
     readability_scorer = ReadabilityScorer()
     df_features = train["statement"].apply(readability_scorer.analyze_text_complexity).apply(pd.Series)
