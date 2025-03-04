@@ -21,8 +21,8 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
     
     numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
 
-    statements = train["statement"].tolist()
-    labels = train["label"].tolist()
+    statements = df["statement"].tolist()
+    labels = df["label"].tolist()
     tabular_data = numerical_tensor
     
     dataset = FakeNewsDataset(statements, tabular_data, labels)
