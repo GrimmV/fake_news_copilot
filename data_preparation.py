@@ -23,11 +23,8 @@ def prepare_data(df: pd.DataFrame, numerical_cols, categorical_cols, cache_file:
     sentiment_model = SentimentModel()
     train["sentiment"] = sentiment_model.generate(train["statement"].tolist())
     
-    preprocessor = Preprocessor()
-    tab_data = preprocessor.preprocessing(train, numerical_cols, categorical_cols)
-    
     # Save processed DataFrame for future use
     with open(cache_file, "wb") as f:
-        pickle.dump(tab_data, f)
+        pickle.dump(train, f)
 
-    return tab_data
+    return train
