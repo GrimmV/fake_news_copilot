@@ -19,7 +19,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
                       "Difficult Word Ratio", "Dependency Depth", "Length", "sentiment"]
     categorical_cols = []
     
-    numerical_tensor = torch.tensor(df[numerical_cols], dtype=torch.float32)
+    numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
 
     statements = train["statement"].tolist()
     labels = train["label"].tolist()
