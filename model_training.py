@@ -54,7 +54,7 @@ if __name__ == "__main__":
     dataset = datasets.load_dataset(dataset)
     train = pd.DataFrame(dataset["train"])
     
-    train = prepare_data(train)
+    train = prepare_data(train, use_cache=False)
 
     model, processed_dataset = model_training(train, use_cache=False)
     
