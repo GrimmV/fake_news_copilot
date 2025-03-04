@@ -1,9 +1,5 @@
 import torch
 from torch.utils.data import Dataset
-from transformers import BertTokenizer
-
-# Tokenizer for BERT input
-tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 class FakeNewsDataset(Dataset):
     def __init__(self, texts, tabular, labels):
@@ -15,9 +11,8 @@ class FakeNewsDataset(Dataset):
         return len(self.texts)
     
     def __getitem__(self, idx):
-        encoded_text = tokenizer(self.texts[idx], padding="max_length", truncation=True, max_length=512, return_tensors="pt")
         return {
-            "encoded_text": encoded_text,  
+            "encoded_text": self.texts,  
             "tabular": self.tabular,
             "label": torch.tensor(self.labels[idx], dtype=torch.float32)
         }
