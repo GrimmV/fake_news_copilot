@@ -48,12 +48,10 @@ class FakeNewsClassifier(nn.Module):
         processed_features = self.preprocessor.fit_transform(df)  # Ensure fitted before inference
         return torch.tensor(processed_features, dtype=torch.float32).to(self.device)
 
-    def forward(self, input_text, numerical_features):
+    def forward(self, encoded_text, numerical_features):
         """Differentiable forward pass"""
 
-        # Tokenize text and get BERT embeddings
-        encoded_input = self.tokenizer(input_text, padding=True, truncation=True, return_tensors="pt").to(self.device)
-        bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
+        bert_output = self.bert(**encoded_text).last_hidden_state[:, 0, :]
 
         # Normalize numerical features
         numerical_features = self.batch_norm(numerical_features.to(self.device))

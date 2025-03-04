@@ -15,8 +15,9 @@ class FakeNewsDataset(Dataset):
         return len(self.texts)
     
     def __getitem__(self, idx):
+        encoded_text = tokenizer(self.texts[idx], padding="max_length", truncation=True, max_length=512, return_tensors="pt")
         return {
-            "input_text": self.texts,  
+            "encoded_text": encoded_text,  
             "tabular": self.tabular,
             "label": torch.tensor(self.labels[idx], dtype=torch.float32)
         }

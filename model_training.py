@@ -21,7 +21,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
     
     numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
 
-    statements = train["statement"].tolist()[0]
+    statements = train["statement"].tolist()
     print(statements)
     labels = train["label"].tolist()
     tabular_data = numerical_tensor
