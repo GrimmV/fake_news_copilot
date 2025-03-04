@@ -41,7 +41,7 @@ def model_training(df, cache_file: str = "model/model.pkl"):
     with open(cache_file, "wb") as f:
         pickle.dump(model, f)
         
-    return model, dataloader
+    return model, dataset
 
 
 # Example usage
@@ -52,16 +52,14 @@ if __name__ == "__main__":
     dataset = datasets.load_dataset(dataset)
     train = pd.DataFrame(dataset["train"])
 
-    model, dataloader = model_training(train)
+    model, processed_dataset = model_training(train)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    for batch in dataloader:
-        input_ids = batch["input_ids"].to(device)
-        attention_mask = batch["attention_mask"].to(device)
-        tabular_features = batch["tabular_features"].to(device)
-        labels = batch["label"].to(device).long()  # Reshape for BCEWithLogitsLoss
-        break
+    input_ids = processed_dataset[:2]["input_ids"].to(device)
+    attention_mask = processed_dataset[:2]["attention_mask"].to(device)
+    tabular_features = processed_dataset[:2]["tabular_features"].to(device)
+    labels = processed_dataset[:2]["label"].to(device).long()  # Reshape for BCEWithLogitsLoss
     
     sample_output = model.forward(input_ids, attention_mask, tabular_features)
     actual_output = labels
