@@ -60,7 +60,7 @@ if __name__ == "__main__":
         input_ids = batch["input_ids"].to(device)
         attention_mask = batch["attention_mask"].to(device)
         tabular_features = batch["tabular_features"].to(device)
-        labels = batch["label"].to(device).unsqueeze(1)  # Reshape for BCEWithLogitsLoss
+        labels = batch["label"].to(device).long()  # Reshape for BCEWithLogitsLoss
         break
     
     sample_output = model.forward(input_ids, attention_mask, tabular_features)
