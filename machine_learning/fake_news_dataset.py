@@ -6,9 +6,9 @@ from transformers import BertTokenizer
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 class FakeNewsDataset(Dataset):
-    def __init__(self, texts, tabular_df, labels):
+    def __init__(self, texts, tabular, labels):
         self.texts = texts
-        self.tabular_df = tabular_df
+        self.tabular = tabular
         self.labels = labels
     
     def __len__(self):
@@ -17,6 +17,6 @@ class FakeNewsDataset(Dataset):
     def __getitem__(self, idx):
         return {
             "input_text": self.texts,  
-            "tabular_df": self.tabular_df.clone().detach().requires_grad_(True),
+            "tabular": self.tabular,
             "label": torch.tensor(self.labels[idx], dtype=torch.float32)
         }
