@@ -19,8 +19,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
                       "Difficult Word Ratio", "Dependency Depth", "Length", "sentiment"]
     categorical_cols = []
     
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32).to(device)
+    numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
 
     statements = train["statement"].tolist()
     labels = train["label"].tolist()
