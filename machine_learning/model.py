@@ -6,13 +6,13 @@ from transformers import BertModel, BertTokenizer
 class FakeNewsClassifier(nn.Module):
     def __init__(self, num_tabular_features, bert_model_name="bert-base-uncased"):
         super(FakeNewsClassifier, self).__init__()
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # Load pre-trained BERT
-        self.bert = BertModel.from_pretrained(bert_model_name)
+        self.bert = BertModel.from_pretrained(bert_model_name, device_map=self.device)
         self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
         self.bert_hidden_size = self.bert.config.hidden_size  # Typically 768 for BERT-base
         self.optimizer = optim.Adam(self.parameters(), lr=2e-5, weight_decay=1e-5)
         self.criterion = nn.CrossEntropyLoss()  # Cross-Entropy Loss for 5 classes
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         num_classes = 6
         
         # Tabular feature processing
