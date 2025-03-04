@@ -9,7 +9,7 @@ class FakeNewsDataset(Dataset):
     def __init__(self, texts, tabular_data, labels):
         self.texts = texts
         self.tabular_data = tabular_data
-        self.labels = labels  # Binary labels: 0 (real), 1 (fake)
+        self.labels = labels
     
     def __len__(self):
         return len(self.texts)
@@ -19,6 +19,6 @@ class FakeNewsDataset(Dataset):
         return {
             "input_ids": encoded_text["input_ids"].squeeze(0),  
             "attention_mask": encoded_text["attention_mask"].squeeze(0),
-            "tabular_features": torch.tensor(self.tabular_data[idx], dtype=torch.float32),
+            "tabular_features": self.tabular_data[idx].clone().detach().requires_grad_(True), # depracated: torch.tensor(self.tabular_data[idx], dtype=torch.float32),
             "label": torch.tensor(self.labels[idx], dtype=torch.float32)
         }

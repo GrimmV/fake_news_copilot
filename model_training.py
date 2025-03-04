@@ -56,10 +56,10 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     for batch in dataloader:
-        input_ids = batch[0]["input_ids"].to(device)
-        attention_mask = batch[0]["attention_mask"].to(device)
-        tabular_features = batch[0]["tabular_features"].to(device)
-        labels = batch[0]["label"].to(device).unsqueeze(1)  # Reshape for BCEWithLogitsLoss
+        input_ids = batch["input_ids"].to(device)
+        attention_mask = batch["attention_mask"].to(device)
+        tabular_features = batch["tabular_features"].to(device)
+        labels = batch["label"].to(device).unsqueeze(1)  # Reshape for BCEWithLogitsLoss
         break
     
     sample_output = model.forward(input_ids, attention_mask, tabular_features)
