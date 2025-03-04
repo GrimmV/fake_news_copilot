@@ -14,11 +14,6 @@ logging.basicConfig(filename='training.log', level=logging.INFO)
 
 
 def model_training(df, cache_file: str = "model/model.pkl"):
-    # Check if cached file exists
-    if os.path.exists(cache_file):
-        with open(cache_file, "rb") as f:
-            print("Loading cached DataFrame...")
-            return pickle.load(f)
 
     # Prepare tabular and textual data
     tabular_data = prepare_data(df)
@@ -30,6 +25,12 @@ def model_training(df, cache_file: str = "model/model.pkl"):
     
     dataset = FakeNewsDataset(statements, tabular_data, labels)
     dataloader = DataLoader(dataset, batch_size=50, shuffle=True, num_workers=1)
+    
+        # Check if cached file exists
+    if os.path.exists(cache_file):
+        with open(cache_file, "rb") as f:
+            print("Loading cached DataFrame...")
+            return pickle.load(f), dataloader
 
     # Model initialization
     model = FakeNewsClassifier(num_tabular_features=tabular_data_length)
