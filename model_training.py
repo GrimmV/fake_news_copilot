@@ -64,6 +64,9 @@ if __name__ == "__main__":
     sample_output = model.forward(input_ids, attention_mask, tabular_features)
     actual_output = labels
     
+    print(f"tabular features: {str(tabular_features)}")
+    print(f"statements: {str(attention_mask)}")
+    
     print(f"sample output: {sample_output}")
     print(f"actual output: {actual_output}")
     
