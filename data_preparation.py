@@ -6,7 +6,7 @@ import os
 import pickle
 import pandas as pd
 
-def prepare_data(df: pd.DataFrame, cache_file: str = "processed_data.pkl"):
+def prepare_data(df: pd.DataFrame, numerical_cols, categorical_cols, cache_file: str = "processed_data.pkl"):
     # Check if cached file exists
     if os.path.exists(cache_file):
         with open(cache_file, "rb") as f:
@@ -22,10 +22,6 @@ def prepare_data(df: pd.DataFrame, cache_file: str = "processed_data.pkl"):
 
     sentiment_model = SentimentModel()
     train["sentiment"] = sentiment_model.generate(train["statement"].tolist())
-
-    numerical_cols = ["Lexical Diversity (TTR)", "Average Word Length", "Avg Syllables per Word", 
-                      "Difficult Word Ratio", "Dependency Depth", "Length", "sentiment"]
-    categorical_cols = []
     
     preprocessor = Preprocessor()
     tab_data = preprocessor.preprocessing(train, numerical_cols, categorical_cols)

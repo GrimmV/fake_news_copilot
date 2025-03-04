@@ -15,8 +15,11 @@ logging.basicConfig(filename='training.log', level=logging.INFO)
 
 def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
 
+    numerical_cols = ["Lexical Diversity (TTR)", "Average Word Length", "Avg Syllables per Word", 
+                      "Difficult Word Ratio", "Dependency Depth", "Length", "sentiment"]
+    categorical_cols = []
     # Prepare tabular and textual data
-    tabular_data = prepare_data(df)
+    tabular_data = prepare_data(df, numerical_cols, categorical_cols)
 
     tabular_data_length = list(tabular_data.size())[1]
 
@@ -33,7 +36,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
             return pickle.load(f), dataset
 
     # Model initialization
-    model = FakeNewsClassifier(num_tabular_features=tabular_data_length)
+    model = FakeNewsClassifier(tabular_data_length, numerical_cols, categorical_cols)
     
     model.train_model(dataloader)
 
