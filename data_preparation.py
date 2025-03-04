@@ -6,9 +6,9 @@ import os
 import pickle
 import pandas as pd
 
-def prepare_data(df: pd.DataFrame, numerical_cols, categorical_cols, cache_file: str = "processed_data.pkl"):
+def prepare_data(df: pd.DataFrame, cache_file: str = "processed_data.pkl", use_cache = True):
     # Check if cached file exists
-    if os.path.exists(cache_file):
+    if os.path.exists(cache_file) and use_cache:
         with open(cache_file, "rb") as f:
             print("Loading cached DataFrame...")
             return pickle.load(f)
