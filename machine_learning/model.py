@@ -66,8 +66,6 @@ class FakeNewsClassifier(nn.Module):
                 self.optimizer.zero_grad()
                 outputs = self.forward(input_ids, attention_mask, tabular_features)
                 
-                print(outputs)
-                print(labels)
                 
                 loss = self.criterion(outputs, labels)
                 loss.backward()
