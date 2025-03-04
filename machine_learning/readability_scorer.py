@@ -47,17 +47,17 @@ class ReadabilityScorer:
             "Avg Syllables per Word": round(avg_syllables_per_word, 2),
             "Difficult Word Ratio": round(difficult_word_ratio, 2),
             "Dependency Depth": dependency_depth,
-            "Length": self._length_categorization(num_words)
+            "Length":num_words
         }
     
-    def _length_categorization(self, num_words):
+    # def _length_categorization(self, num_words):
         
-        if (num_words < 50):
-            return "short"
-        if (num_words > 200):
-            return "long"
-        else:
-            return "medium"
+    #     if (num_words < 50):
+    #         return "short"
+    #     if (num_words > 200):
+    #         return "long"
+    #     else:
+    #         return "medium"
     
 # Example usage
 if __name__ == "__main__":

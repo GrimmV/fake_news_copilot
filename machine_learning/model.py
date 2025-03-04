@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from transformers import BertModel, BertTokenizer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
 
 class FakeNewsClassifier(nn.Module):
     def __init__(self, num_tabular_features, bert_model_name="bert-base-uncased"):
@@ -12,6 +10,10 @@ class FakeNewsClassifier(nn.Module):
         self.bert = BertModel.from_pretrained(bert_model_name)
         self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
         self.bert_hidden_size = self.bert.config.hidden_size  # Typically 768 for BERT-base
+        self.optimizer = optim.Adam(self.parameters(), lr=2e-5, weight_decay=1e-5)
+        self.criterion = nn.CrossEntropyLoss()  # Cross-Entropy Loss for 5 classes
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        num_classes = 6
         
         # Tabular feature processing
         self.tabular_fc = nn.Sequential(
@@ -25,8 +27,7 @@ class FakeNewsClassifier(nn.Module):
             nn.Linear(self.bert_hidden_size + 64, 128),
             nn.ReLU(),
             nn.Dropout(0.1),
-            nn.Linear(128, 5),  # Binary classification (fake or real)
-            nn.Sigmoid()
+            nn.Linear(128, num_classes),  # Binary classification (fake or real)
         )
 
     def forward(self, input_ids, attention_mask, tabular_features):
@@ -44,19 +45,37 @@ class FakeNewsClassifier(nn.Module):
         output = self.classifier(combined_features)
         return output
     
-    # Preprocessing: Scaling numerical values & one-hot encoding categorical values
-    def preprocessing(self, df, numerical_features: list, categorical_features: list):
-        
-        preprocessor = ColumnTransformer([
-            ("num", StandardScaler(), numerical_features),  
-            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)  
-        ])
+    def train_model(self, dataloader, num_epochs=3):
+        self.train()
+        for epoch in range(num_epochs):
+            total_loss = 0.0
+            correct = 0
+            total = 0
 
-        # Apply transformations
-        processed_features = preprocessor.fit_transform(df)
-        
-        tabular_tensor = torch.tensor(processed_features.toarray(), dtype=torch.float32)
-        return tabular_tensor
+            for batch in dataloader:
+                input_ids = batch["input_ids"].to(self.device)
+                attention_mask = batch["attention_mask"].to(self.device)
+                tabular_features = batch["tabular_features"].to(self.device)
+                labels = batch["label"].to(self.device).long()  # Reshape for BCEWithLogitsLoss
+
+                self.optimizer.zero_grad()
+                outputs = self.forward(input_ids, attention_mask, tabular_features)
+                
+                print(outputs)
+                print(labels)
+                
+                loss = self.criterion(outputs, labels)
+                loss.backward()
+                self.optimizer.step()
+
+                total_loss += loss.item()
+                predicted = torch.argmax(outputs, dim=1)
+                correct += (predicted == labels).sum().item()
+                total += labels.size(0)
+            
+            avg_loss = total_loss / len(dataloader)
+            accuracy = correct / total
+            print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {avg_loss:.4f}, Accuracy: {accuracy:.4f}")
     
 # Example usage
 if __name__ == "__main__":
