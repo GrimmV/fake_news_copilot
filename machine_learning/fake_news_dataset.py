@@ -17,6 +17,6 @@ class FakeNewsDataset(Dataset):
     def __getitem__(self, idx):
         return {
             "input_text": self.texts,  
-            "tabular_df": torch.tensor(self.tabular_df, dtype=torch.float32),
+            "tabular_df": self.tabular_df.clone().detach().requires_grad_(True),
             "label": torch.tensor(self.labels[idx], dtype=torch.float32)
         }

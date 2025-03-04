@@ -51,6 +51,8 @@ class FakeNewsClassifier(nn.Module):
     def forward(self, input_text, numerical_features):
         """Differentiable forward pass"""
 
+        print(input_text)
+
         # Tokenize text and get BERT embeddings
         encoded_input = self.tokenizer(input_text, padding=True, truncation=True, return_tensors="pt").to(self.device)
         bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
