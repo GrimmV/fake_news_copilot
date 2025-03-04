@@ -8,7 +8,7 @@ class FakeNewsClassifier(nn.Module):
         super(FakeNewsClassifier, self).__init__()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # Load pre-trained BERT
-        self.bert = BertModel.from_pretrained(bert_model_name, device_map=self.device)
+        self.bert = BertModel.from_pretrained(bert_model_name)
         self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
         self.bert_hidden_size = self.bert.config.hidden_size  # Typically 768 for BERT-base
         self.optimizer = optim.Adam(self.parameters(), lr=2e-5, weight_decay=1e-5)
@@ -29,6 +29,8 @@ class FakeNewsClassifier(nn.Module):
             nn.Dropout(0.1),
             nn.Linear(128, num_classes),  # Binary classification (fake or real)
         )
+        
+        self.to(self.device)
 
     def forward(self, input_ids, attention_mask, tabular_features):
         # BERT processing
