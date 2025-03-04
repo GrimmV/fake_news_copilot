@@ -28,7 +28,7 @@ def model_training(df, cache_file: str = "model/model.pkl"):
     dataloader = DataLoader(dataset, batch_size=10, shuffle=True, num_workers=1)
 
     # Model initialization
-    model = FakeNewsClassifier(num_tabular_features=tabular_data_length, device="cpu")
+    model = FakeNewsClassifier(num_tabular_features=tabular_data_length)
     
     model.train_model(dataloader)
 
