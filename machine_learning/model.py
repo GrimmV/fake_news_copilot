@@ -79,8 +79,8 @@ class FakeNewsClassifier(nn.Module):
             total = 0
 
             for batch in dataloader:
-                input_text = batch["input_text"].to(self.device)
-                tabular_df = batch["tabular_df"].to(self.device)
+                input_text = batch["input_text"]
+                tabular_df = batch["tabular_df"]
                 labels = batch["label"].to(self.device).long()  # Reshape for BCEWithLogitsLoss
 
                 self.optimizer.zero_grad()
