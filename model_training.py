@@ -30,7 +30,7 @@ def model_training(df, cache_file: str = "model/model.pkl"):
     if os.path.exists(cache_file):
         with open(cache_file, "rb") as f:
             print("Loading cached DataFrame...")
-            return pickle.load(f), dataloader
+            return pickle.load(f), dataset
 
     # Model initialization
     model = FakeNewsClassifier(num_tabular_features=tabular_data_length)
