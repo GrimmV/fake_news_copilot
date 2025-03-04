@@ -9,41 +9,37 @@ import logging
 logger = logging.getLogger(__name__)
 
 class FakeNewsClassifier(nn.Module):
-    def __init__(self, num_tabular_features, numerical_features, categorical_features, bert_model_name="bert-base-uncased"):
+    def __init__(self, num_numeric_features, bert_model_name="bert-base-uncased"):
         super(FakeNewsClassifier, self).__init__()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # Load pre-trained BERT
         self.bert = BertModel.from_pretrained(bert_model_name)
         self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
         self.bert_hidden_size = self.bert.config.hidden_size  # Typically 768 for BERT-base
+        
         self.optimizer = optim.Adam(self.parameters(), lr=2e-5, weight_decay=1e-5)
         self.criterion = nn.CrossEntropyLoss()  # Cross-Entropy Loss for 5 classes
         num_classes = 6
         
-        # Tabular feature processing
+        # Replace sklearn transformations with PyTorch layers
+        self.batch_norm = nn.BatchNorm1d(num_numeric_features)  # Acts like StandardScaler
+        # self.embedding = nn.Embedding(num_categories, 10)  # Acts like OneHotEncoder (learns embeddings)
+        
+        # Tabular processing
         self.tabular_fc = nn.Sequential(
-            nn.Linear(num_tabular_features, 64),
+            # nn.Linear(num_numeric_features + 10, 64),
+            nn.Linear(num_numeric_features, 64),
             nn.ReLU(),
             nn.Dropout(0.1)
         )
-        
-        # Fusion layer (BERT + Tabular features)
+
+        # Fusion layer
         self.classifier = nn.Sequential(
             nn.Linear(self.bert_hidden_size + 64, 128),
             nn.ReLU(),
             nn.Dropout(0.1),
-            nn.Linear(128, num_classes),  # Binary classification (fake or real)
+            nn.Linear(128, num_classes)
         )
-        
-        # Store feature names
-        self.numerical_features = numerical_features
-        self.categorical_features = categorical_features
-        
-        # Define preprocessor pipeline
-        self.preprocessor = ColumnTransformer([
-            ("num", StandardScaler(), numerical_features),
-            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
-        ])
         
         self.to(self.device)
         
@@ -52,23 +48,28 @@ class FakeNewsClassifier(nn.Module):
         processed_features = self.preprocessor.fit_transform(df)  # Ensure fitted before inference
         return torch.tensor(processed_features, dtype=torch.float32).to(self.device)
 
-    def forward(self, input_text, tabular_df):
-        """Full forward pass, including text tokenization and tabular preprocessing."""
-        
-        # Preprocess tabular data
-        tabular_tensor = self.preprocess_tabular(tabular_df)
+    def forward(self, input_text, numerical_features):
+        """Differentiable forward pass"""
 
         # Tokenize text and get BERT embeddings
         encoded_input = self.tokenizer(input_text, padding=True, truncation=True, return_tensors="pt").to(self.device)
-        bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]  # Extract CLS token
-        
-        # Process tabular data
-        tabular_features = self.tabular_fc(tabular_tensor)
+        bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
 
-        # Concatenate BERT and tabular features
+        # Normalize numerical features
+        numerical_features = self.batch_norm(numerical_features.to(self.device))
+
+        # Convert categorical features to embeddings
+        # categorical_features = self.embedding(categorical_features.to(self.device))
+        # categorical_features = categorical_features.view(categorical_features.size(0), -1)
+
+        # Concatenate and process tabular data
+        # tabular_features = torch.cat((numerical_features, categorical_features), dim=1)
+        # tabular_features = self.tabular_fc(tabular_features)
+        tabular_features = self.tabular_fc(numerical_features)
+
+        # Combine with BERT output
         combined_features = torch.cat((bert_output, tabular_features), dim=1)
-        
-        # Classification
+
         return self.classifier(combined_features)
     
     def train_model(self, dataloader, num_epochs=3):
@@ -85,7 +86,6 @@ class FakeNewsClassifier(nn.Module):
 
                 self.optimizer.zero_grad()
                 outputs = self.forward(input_text, tabular_df)
-                
                 
                 loss = self.criterion(outputs, labels)
                 loss.backward()

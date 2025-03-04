@@ -18,17 +18,16 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
     numerical_cols = ["Lexical Diversity (TTR)", "Average Word Length", "Avg Syllables per Word", 
                       "Difficult Word Ratio", "Dependency Depth", "Length", "sentiment"]
     categorical_cols = []
-    # Prepare tabular and textual data
-    tabular_data = prepare_data(df, use_cache=False)
-
-    tabular_data_length = list(tabular_data.size())[1]
+    
+    numerical_tensor = torch.tensor(df[numerical_cols], dtype=torch.float32)
 
     statements = train["statement"].tolist()
     labels = train["label"].tolist()
+    tabular_data = train[numerical_cols]
     
     dataset = FakeNewsDataset(statements, tabular_data, labels)
-    dataloader = DataLoader(dataset, batch_size=50, shuffle=True, num_workers=1)
     
+    dataloader = DataLoader(dataset, batch_size=50, shuffle=True, num_workers=1)
     # Check if cached file exists
     if os.path.exists(cache_file) and use_cache:
         with open(cache_file, "rb") as f:
@@ -36,7 +35,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
             return pickle.load(f), dataset
 
     # Model initialization
-    model = FakeNewsClassifier(tabular_data_length, numerical_cols, categorical_cols)
+    model = FakeNewsClassifier(len(numerical_tensor))#, num_categories)
     
     model.train_model(dataloader)
 
@@ -54,6 +53,8 @@ if __name__ == "__main__":
     dataset = "chengxuphd/liar2"
     dataset = datasets.load_dataset(dataset)
     train = pd.DataFrame(dataset["train"])
+    
+    train = prepare_data(train)
 
     model, processed_dataset = model_training(train, use_cache=False)
     
