@@ -7,6 +7,9 @@ tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 class FakeNewsDataset(Dataset):
     def __init__(self, texts, tabular_df, labels):
+        print(texts)
+        print(tabular_df)
+        print(labels)
         self.texts = texts
         self.tabular_df = tabular_df
         self.labels = labels

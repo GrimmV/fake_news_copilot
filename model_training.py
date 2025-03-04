@@ -23,7 +23,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
 
     statements = train["statement"].tolist()
     labels = train["label"].tolist()
-    tabular_data = train[numerical_cols]
+    tabular_data = numerical_tensor
     
     dataset = FakeNewsDataset(statements, tabular_data, labels)
     
