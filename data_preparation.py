@@ -1,7 +1,6 @@
 import pandas as pd
 from machine_learning.readability_scorer import ReadabilityScorer
 from machine_learning.sentiment_model import SentimentModel
-from machine_learning.preprocessor import Preprocessor
 import os
 import pickle
 import pandas as pd
