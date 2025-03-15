@@ -67,7 +67,7 @@ class FakeNewsClassifier(nn.Module):
         print(numerical_features.shape)
 
         # Normalize numerical features
-        numerical_features = self.batch_norm(numerical_features.to(self.device))
+        numerical_features = self.batch_norm(numerical_features)
 
         # Convert categorical features to embeddings
         # categorical_features = self.embedding(categorical_features.to(self.device))
