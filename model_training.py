@@ -25,8 +25,6 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
     labels = df["label"].tolist()
     tabular_data = numerical_tensor
     
-    print(tabular_data.shape)
-    
     dataset = FakeNewsDataset(statements, tabular_data, labels)
     
     dataloader = DataLoader(dataset, batch_size=50, shuffle=True, num_workers=1)
@@ -37,7 +35,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
             return pickle.load(f), dataset
 
     # Model initialization
-    model = FakeNewsClassifier(len(numerical_tensor))#, num_categories)
+    model = FakeNewsClassifier(tabular_data.shape[1])
     
     model.train_model(dataloader)
 
