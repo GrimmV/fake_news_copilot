@@ -48,7 +48,9 @@ class FakeNewsClassifier(nn.Module):
             padding=True,
             truncation=True,
             return_tensors="pt"
-        ).to(self.device)
+        )
+        
+        encoded_input = {k: v.to(self.device) for k, v in encoded_input.items()}
         
         print("Encoded input shape:", {k: v.shape for k, v in encoded_input.items()})
         print("Numerical features shape:", numerical_features.shape)
