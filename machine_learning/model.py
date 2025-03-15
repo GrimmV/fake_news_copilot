@@ -21,8 +21,6 @@ class FakeNewsClassifier(nn.Module):
         self.criterion = nn.CrossEntropyLoss()  # Cross-Entropy Loss for 5 classes
         num_classes = 6
         
-        print(f"number of numeric features: {num_numeric_features}")
-        
         self.batch_norm = nn.BatchNorm1d(num_numeric_features)  # Acts like StandardScaler
         
         # Tabular processing
@@ -54,18 +52,10 @@ class FakeNewsClassifier(nn.Module):
         
         encoded_input = {k: v.to(self.device) for k, v in encoded_input.items()}
         
-        print("Encoded input shape:", {k: v.shape for k, v in encoded_input.items()})
-        print("Numerical features shape:", numerical_features.shape)
-        
         bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
-        
-        print("Is contiguous:", numerical_features.is_contiguous())
-        print("Dtype:", numerical_features.dtype)
 
         # Normalize numerical features
         x = self.batch_norm(numerical_features)
-        
-        print("Output of batch norm shape:", x.shape)
 
         tabular_features = self.tabular_fc(x)
 
