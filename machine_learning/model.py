@@ -63,6 +63,8 @@ class FakeNewsClassifier(nn.Module):
         print("Encoded input shape:", {k: v.shape for k, v in encoded_input.items()})
         
         bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
+        
+        print(numerical_features.shape)
 
         # Normalize numerical features
         numerical_features = self.batch_norm(numerical_features.to(self.device))
