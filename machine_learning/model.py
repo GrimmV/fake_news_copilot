@@ -21,13 +21,10 @@ class FakeNewsClassifier(nn.Module):
         self.criterion = nn.CrossEntropyLoss()  # Cross-Entropy Loss for 5 classes
         num_classes = 6
         
-        # Replace sklearn transformations with PyTorch layers
         self.batch_norm = nn.BatchNorm1d(num_numeric_features)  # Acts like StandardScaler
-        # self.embedding = nn.Embedding(num_categories, 10)  # Acts like OneHotEncoder (learns embeddings)
         
         # Tabular processing
         self.tabular_fc = nn.Sequential(
-            # nn.Linear(num_numeric_features + 10, 64),
             nn.Linear(num_numeric_features, 64),
             nn.ReLU(),
             nn.Dropout(0.1)
@@ -42,21 +39,9 @@ class FakeNewsClassifier(nn.Module):
         )
         
         self.to(self.device)
-        
-    def preprocess_tabular(self, df):
-        """Preprocess raw tabular data into a tensor."""
-        processed_features = self.preprocessor.fit_transform(df)  # Ensure fitted before inference
-        return torch.tensor(processed_features, dtype=torch.float32).to(self.device)
 
     def forward(self, input_text, numerical_features):
         """Differentiable forward pass"""
-        
-        print("Type of input_text:", type(input_text))
-        if isinstance(input_text, (list, tuple)):
-            print("Type of first item in input_text:", type(input_text[0]))
-            print("First item:", input_text[0])
-            print(len(input_text))
-            print(len(input_text[0]))
         
         encoded_input = self.tokenizer(
             input_text,
@@ -73,13 +58,6 @@ class FakeNewsClassifier(nn.Module):
         # Normalize numerical features
         numerical_features = self.batch_norm(numerical_features)
 
-        # Convert categorical features to embeddings
-        # categorical_features = self.embedding(categorical_features.to(self.device))
-        # categorical_features = categorical_features.view(categorical_features.size(0), -1)
-
-        # Concatenate and process tabular data
-        # tabular_features = torch.cat((numerical_features, categorical_features), dim=1)
-        # tabular_features = self.tabular_fc(tabular_features)
         tabular_features = self.tabular_fc(numerical_features)
 
         # Combine with BERT output
@@ -95,7 +73,7 @@ class FakeNewsClassifier(nn.Module):
             total = 0
 
             for batch in dataloader:
-                text = batch["text"]
+                text = batch["text"].to(self.device)
                 tabular = batch["tabular"].to(self.device)
                 labels = batch["label"].to(self.device).long()  # Reshape for BCEWithLogitsLoss
 
