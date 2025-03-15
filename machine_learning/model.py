@@ -21,6 +21,8 @@ class FakeNewsClassifier(nn.Module):
         self.criterion = nn.CrossEntropyLoss()  # Cross-Entropy Loss for 5 classes
         num_classes = 6
         
+        print(f"number of numeric features: {num_numeric_features}")
+        
         self.batch_norm = nn.BatchNorm1d(num_numeric_features)  # Acts like StandardScaler
         
         # Tabular processing
