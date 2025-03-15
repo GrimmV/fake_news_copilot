@@ -12,7 +12,7 @@ class FakeNewsDataset(Dataset):
     
     def __getitem__(self, idx):
         return {
-            "text": self.texts,  
-            "tabular": self.tabular,
+            "text": self.texts[idx],  
+            "tabular": self.tabular[idx],
             "label": torch.tensor(self.labels[idx], dtype=torch.float32)
         }
