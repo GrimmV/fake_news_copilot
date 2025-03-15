@@ -80,7 +80,7 @@ if __name__ == "__main__":
         texts = batch["text"]  # List of tokenized texts (if tokenized) or raw texts
         tabular_features = batch["tabular"].to(device)  # Move tabular data to device
         labels = batch["label"].to(device).long()  # Move labels to device and convert to long
-
+        
         # If texts are not tokenized, tokenize them here
         # Example: Using a tokenizer for transformer models
         inputs = tokenizer(texts, return_tensors="pt", padding=True, truncation=True)
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
         # Forward pass
         with torch.no_grad():
-            sample_output = model(input_ids, attention_mask, tabular_features)
+            sample_output = model(texts, tabular_features)
 
         # Print statements
         print(f"tabular features: {tabular_features.cpu().numpy()}")
