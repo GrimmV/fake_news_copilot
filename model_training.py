@@ -37,6 +37,8 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
     # Model initialization
     model = FakeNewsClassifier(len(numerical_tensor))#, num_categories)
     
+    print(numerical_tensor)
+    
     model.train_model(dataloader)
 
     # Save processed DataFrame for future use
