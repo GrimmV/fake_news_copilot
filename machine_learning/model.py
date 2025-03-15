@@ -57,13 +57,16 @@ class FakeNewsClassifier(nn.Module):
         
         bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
         
-        print("Device of batch_norm:", next(self.batch_norm.parameters()).device)
-        print("Device of numerical_features:", numerical_features.device)
+        print("Numerical features shape:", numerical_features.shape)
+        print("Is contiguous:", numerical_features.is_contiguous())
+        print("Dtype:", numerical_features.dtype)
 
         # Normalize numerical features
-        numerical_features = self.batch_norm(numerical_features)
+        x = self.batch_norm(numerical_features)
+        
+        print("Output of batch norm shape:", x.shape)
 
-        tabular_features = self.tabular_fc(numerical_features)
+        tabular_features = self.tabular_fc(x)
 
         # Combine with BERT output
         combined_features = torch.cat((bert_output, tabular_features), dim=1)
