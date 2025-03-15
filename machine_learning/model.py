@@ -57,7 +57,6 @@ class FakeNewsClassifier(nn.Module):
         
         bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
         
-        print("Numerical features shape:", numerical_features.shape)
         print("Is contiguous:", numerical_features.is_contiguous())
         print("Dtype:", numerical_features.dtype)
 
