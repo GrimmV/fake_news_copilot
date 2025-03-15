@@ -55,6 +55,8 @@ class FakeNewsClassifier(nn.Module):
         if isinstance(input_text, (list, tuple)):
             print("Type of first item in input_text:", type(input_text[0]))
             print("First item:", input_text[0])
+            print(len(input_text))
+            print(len(input_text[0]))
         
         encoded_input = self.tokenizer(
             input_text,

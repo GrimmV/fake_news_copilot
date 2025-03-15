@@ -31,7 +31,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
     # Check if cached file exists
     if os.path.exists(cache_file) and use_cache:
         with open(cache_file, "rb") as f:
-            print("Loading cached Model...")
+            print("Loading cached Dataset...")
             return pickle.load(f), dataset
 
     # Model initialization
