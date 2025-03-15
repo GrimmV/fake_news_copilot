@@ -25,9 +25,7 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
     labels = df["label"].tolist()
     tabular_data = numerical_tensor
     
-    print(len(statements))
-    print(len(labels))
-    print(len(tabular_data))
+    print(tabular_data.shape)
     
     dataset = FakeNewsDataset(statements, tabular_data, labels)
     
@@ -40,8 +38,6 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True):
 
     # Model initialization
     model = FakeNewsClassifier(len(numerical_tensor))#, num_categories)
-    
-    print(numerical_tensor)
     
     model.train_model(dataloader)
 
