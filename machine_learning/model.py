@@ -51,7 +51,10 @@ class FakeNewsClassifier(nn.Module):
     def forward(self, input_text, numerical_features):
         """Differentiable forward pass"""
         
-        print(input_text)
+        print("Type of input_text:", type(input_text))
+        if isinstance(input_text, (list, tuple)):
+            print("Type of first item in input_text:", type(input_text[0]))
+            print("First item:", input_text[0])
         
         encoded_input = self.tokenizer(
             input_text,
