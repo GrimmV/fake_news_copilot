@@ -54,9 +54,12 @@ class FakeNewsClassifier(nn.Module):
         print("Numerical features shape:", numerical_features.shape)
         
         bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
+        
+        print("Device of batch_norm:", next(self.batch_norm.parameters()).device)
+        print("Device of numerical_features:", numerical_features.device)
 
         # Normalize numerical features
-        numerical_features = self.batch_norm(numerical_features.to(self.device))
+        numerical_features = self.batch_norm(numerical_features)
 
         tabular_features = self.tabular_fc(numerical_features)
 
