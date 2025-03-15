@@ -51,7 +51,8 @@ class FakeNewsClassifier(nn.Module):
     def forward(self, input_text, numerical_features):
         """Differentiable forward pass"""
         
-        input_text = list(input_text[0])
+        if isinstance(input_text, (tuple, list)) and isinstance(input_text[0], list):
+            input_text = input_text[0]
         
         encoded_input = self.tokenizer(
             input_text,
@@ -61,10 +62,9 @@ class FakeNewsClassifier(nn.Module):
         ).to(self.device)
         
         print("Encoded input shape:", {k: v.shape for k, v in encoded_input.items()})
+        print("Numerical features shape:", numerical_features.shape)
         
         bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
-        
-        print(numerical_features.shape)
 
         # Normalize numerical features
         numerical_features = self.batch_norm(numerical_features)
