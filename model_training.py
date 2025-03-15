@@ -57,6 +57,9 @@ if __name__ == "__main__":
     train = pd.DataFrame(dataset["train"])
     
     train = prepare_data(train, use_cache=True)
+    
+    print(train.head())
+    print(len(train))
 
     model, processed_dataset = model_training(train, use_cache=False)
     
