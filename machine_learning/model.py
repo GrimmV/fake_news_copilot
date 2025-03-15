@@ -51,6 +51,8 @@ class FakeNewsClassifier(nn.Module):
     def forward(self, input_text, numerical_features):
         """Differentiable forward pass"""
         
+        print(input_text)
+        
         encoded_input = self.tokenizer(
             input_text,
             padding=True,
@@ -91,9 +93,6 @@ class FakeNewsClassifier(nn.Module):
                 text = batch["text"]
                 tabular = batch["tabular"].to(self.device)
                 labels = batch["label"].to(self.device).long()  # Reshape for BCEWithLogitsLoss
-                
-                print(batch)
-                print(batch.keys())
 
                 self.optimizer.zero_grad()
                 outputs = self.forward(text, tabular)
