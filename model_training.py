@@ -90,6 +90,6 @@ if __name__ == "__main__":
     validation_ds = prepare_data(validation_raw, name="validation")
     test_ds = prepare_data(test_raw, name="test")
 
-    model = model_training(train_ds, validation_ds, use_cache=True, resume_training=True)
+    model = model_training(train_ds, validation_ds)
     
     model_testing(test_ds, model)
