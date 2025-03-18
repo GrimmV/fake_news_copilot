@@ -89,6 +89,8 @@ if __name__ == "__main__":
     train_ds = prepare_data(train_raw, name="train")
     validation_ds = prepare_data(validation_raw, name="validation")
     test_ds = prepare_data(test_raw, name="test")
+    
+    print(train_ds[0])
 
     model = model_training(train_ds, validation_ds)
     
