@@ -2,9 +2,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from transformers import BertModel, BertTokenizer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
 import logging
+from config import lr, weight_decay
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +16,7 @@ class FakeNewsClassifier(nn.Module):
         self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
         self.bert_hidden_size = self.bert.config.hidden_size  # Typically 768 for BERT-base
         
-        self.optimizer = optim.Adam(self.parameters(), lr=2e-5, weight_decay=1e-5)
+        self.optimizer = optim.Adam(self.parameters(), lr=lr, weight_decay=weight_decay)
         self.criterion = nn.CrossEntropyLoss()  # Cross-Entropy Loss for 5 classes
         num_classes = 6
         

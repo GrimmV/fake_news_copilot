@@ -8,24 +8,24 @@ import datasets
 import torch
 import os
 import pickle
-from config import numerical_cols
+from config import numerical_cols, use_cached_model, resume_training
 
 import logging
 
 logging.basicConfig(filename='training.log', level=logging.INFO)
 
-def model_training(train_ds, validation_ds, cache_file: str = "model/model.pkl", use_cache = True, resume_training = False):
+def model_training(train_ds, validation_ds, cache_file: str = "model/model.pkl"):
     
     dataloader_train = DataLoader(train_ds, batch_size=50, shuffle=True, num_workers=1)
     dataloader_validation = DataLoader(validation_ds, batch_size=50, shuffle=False, num_workers=1)
     
     # Check if cached file exists
-    if os.path.exists(cache_file) and use_cache:
+    if os.path.exists(cache_file) and use_cached_model:
         with open(cache_file, "rb") as f:
             print("Loading cached Dataset...")
             model = pickle.load(f)
             if not resume_training:
-                return model, train_ds            
+                return model            
     
     if not resume_training:
         # Model initialization
@@ -37,38 +37,9 @@ def model_training(train_ds, validation_ds, cache_file: str = "model/model.pkl",
     with open(cache_file, "wb") as f:
         pickle.dump(model, f)
         
-    return model, train_ds
+    return model
 
-def prepare_dataset(df):
-    
-    numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
-    statements = df["statement"].tolist()
-    labels = df["label"].tolist()
-    
-    return FakeNewsDataset(statements, numerical_tensor, labels)
-
-# Example usage
-if __name__ == "__main__":
-    
-    # Load training dataset
-    dataset = "chengxuphd/liar2"
-    dataset = datasets.load_dataset(dataset)
-    train_raw = pd.DataFrame(dataset["train"])
-    validation_raw = pd.DataFrame(dataset["validation"])
-    test_raw = pd.DataFrame(dataset["test"])
-    
-    bert_model_name="bert-base-uncased"
-    
-    train_df = prepare_data(train_raw, use_cache=True, name="train")
-    validation_df = prepare_data(validation_raw, use_cache=True, name="validation")
-    test_df = prepare_data(test_raw, use_cache=True, name="test")
-    
-    
-    train_ds = prepare_dataset(train_df)
-    validation_ds = prepare_dataset(validation_df)
-    test_ds = prepare_dataset(test_df)
-
-    model, processed_dataset = model_training(train_ds, validation_ds, use_cache=True, resume_training=True)
+def model_testing(test_ds, model, bert_model_name="bert-base-uncased"):
     
     # Assuming `processed_dataset` is an instance of FakeNewsDataset
     # Create a DataLoader for batching
@@ -102,3 +73,23 @@ if __name__ == "__main__":
 
         # Break after the first batch for testing
         break   
+
+# Example usage
+if __name__ == "__main__":
+    
+    # Load training dataset
+    dataset = "chengxuphd/liar2"
+    dataset = datasets.load_dataset(dataset)
+    train_raw = pd.DataFrame(dataset["train"])
+    validation_raw = pd.DataFrame(dataset["validation"])
+    test_raw = pd.DataFrame(dataset["test"])
+    
+    bert_model_name="bert-base-uncased"
+    
+    train_ds = prepare_data(train_raw, name="train")
+    validation_ds = prepare_data(validation_raw, name="validation")
+    test_ds = prepare_data(test_raw, name="test")
+
+    model = model_training(train_ds, validation_ds, use_cache=True, resume_training=True)
+    
+    model_testing(test_ds, model)

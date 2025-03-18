@@ -2,3 +2,12 @@ base_columns = ["id", "label", "statement", "subject", "speaker", "job_title", "
 
 numerical_cols = ["Lexical Diversity (TTR)", "Average Word Length", "Avg Syllables per Word", 
                       "Difficult Word Ratio", "Dependency Depth", "Length", "sentiment"]
+
+# Caching
+use_cached_data = True
+use_cached_model = True
+resume_training = True
+
+# model hyperparameters
+lr = 2e-5
+weight_decay = 1e-5
