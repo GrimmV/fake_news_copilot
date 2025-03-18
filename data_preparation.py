@@ -14,7 +14,8 @@ def prepare_data(df: pd.DataFrame, cache_file: str = "processed_data.pkl", name 
     if os.path.exists(filename) and use_cached_data:
         with open(filename, "rb") as f:
             print("Loading cached DataFrame...")
-            return pickle.load(f)
+            df = pickle.load(f)
+            return _prepare_dataset(df)
     
     print(f"Processing DataFrame '{name}' for the first time...")
     
