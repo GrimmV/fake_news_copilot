@@ -5,25 +5,25 @@ import os
 import pickle
 import pandas as pd
 
-def prepare_data(df: pd.DataFrame, cache_file: str = "processed_data.pkl", use_cache = True):
+def prepare_data(df: pd.DataFrame, cache_file: str = "processed_data.pkl", use_cache = True, name = "train"):
+    filename = f"{name}_{cache_file}"
     # Check if cached file exists
-    if os.path.exists(cache_file) and use_cache:
-        with open(cache_file, "rb") as f:
+    if os.path.exists(filename) and use_cache:
+        with open(filename, "rb") as f:
             print("Loading cached DataFrame...")
             return pickle.load(f)
     
     print("Processing DataFrame for the first time...")
-    train = df.copy()
     
     readability_scorer = ReadabilityScorer()
-    df_features = train["statement"].apply(readability_scorer.analyze_text_complexity).apply(pd.Series)
-    train = pd.concat([train, df_features], axis=1)
+    df_features = df["statement"].apply(readability_scorer.analyze_text_complexity).apply(pd.Series)
+    df = pd.concat([df, df_features], axis=1)
 
     sentiment_model = SentimentModel()
-    train["sentiment"] = sentiment_model.generate(train["statement"].tolist())
+    df["sentiment"] = sentiment_model.generate(df["statement"].tolist())
     
     # Save processed DataFrame for future use
-    with open(cache_file, "wb") as f:
-        pickle.dump(train, f)
+    with open(filename, "wb") as f:
+        pickle.dump(df, f)
 
-    return train
+    return df

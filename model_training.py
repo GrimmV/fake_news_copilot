@@ -8,27 +8,20 @@ import datasets
 import torch
 import os
 import pickle
+from config import numerical_cols
 
 import logging
 
 logging.basicConfig(filename='training.log', level=logging.INFO)
 
-
-def model_training(df, cache_file: str = "model/model.pkl", use_cache = True, resume_training = False):
-
-    numerical_cols = ["Lexical Diversity (TTR)", "Average Word Length", "Avg Syllables per Word", 
-                      "Difficult Word Ratio", "Dependency Depth", "Length", "sentiment"]
-    categorical_cols = []
+def model_training(train_df, validation_df, cache_file: str = "model/model.pkl", use_cache = True, resume_training = False):
+        
+    train_ds = _prepare_dataset(train_df)
+    validation_ds = _prepare_dataset(validation_df)
     
-    numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
-
-    statements = df["statement"].tolist()
-    labels = df["label"].tolist()
-    tabular_data = numerical_tensor
+    dataloader_train = DataLoader(train_ds, batch_size=50, shuffle=True, num_workers=1)
+    dataloader_validation = DataLoader(validation_ds, batch_size=50, shuffle=False, num_workers=1)
     
-    dataset = FakeNewsDataset(statements, tabular_data, labels)
-    
-    dataloader = DataLoader(dataset, batch_size=50, shuffle=True, num_workers=1)
     # Check if cached file exists
     if os.path.exists(cache_file) and use_cache:
         with open(cache_file, "rb") as f:
@@ -39,9 +32,9 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True, re
     
     if not resume_training:
         # Model initialization
-        model = FakeNewsClassifier(tabular_data.shape[1])
+        model = FakeNewsClassifier(train_ds.shape[1])
     
-    model.train_model(dataloader)
+    model.train_model(dataloader_train, dataloader_validation)
 
     # Save processed DataFrame for future use
     with open(cache_file, "wb") as f:
@@ -49,6 +42,14 @@ def model_training(df, cache_file: str = "model/model.pkl", use_cache = True, re
         
     return model, dataset
 
+def _prepare_dataset(df):
+    numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
+
+    statements = df["statement"].tolist()
+    labels = df["label"].tolist()
+    tabular_data = numerical_tensor
+    
+    return FakeNewsDataset(statements, tabular_data, labels)
 
 # Example usage
 if __name__ == "__main__":
@@ -56,16 +57,20 @@ if __name__ == "__main__":
     # Load training dataset
     dataset = "chengxuphd/liar2"
     dataset = datasets.load_dataset(dataset)
-    train = pd.DataFrame(dataset["train"])
+    train_raw = pd.DataFrame(dataset["train"])
+    validation_raw = pd.DataFrame(dataset["validation"])
+    test_raw = pd.DataFrame(dataset["test"])
     
     bert_model_name="bert-base-uncased"
     
-    train = prepare_data(train, use_cache=True)
+    train = prepare_data(train_raw, use_cache=False, name="train")
+    validation = prepare_data(validation_raw, use_cache=False, name="validation")
+    test = prepare_data(test_raw, use_cache=False, name="test")
     
     print(train.head())
     print(len(train))
 
-    model, processed_dataset = model_training(train, use_cache=True, resume_training=True)
+    model, processed_dataset = model_training(train, validation, use_cache=False, resume_training=False)
     
     # Assuming `processed_dataset` is an instance of FakeNewsDataset
     # Create a DataLoader for batching

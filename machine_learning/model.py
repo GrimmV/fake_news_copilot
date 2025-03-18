@@ -64,21 +64,23 @@ class FakeNewsClassifier(nn.Module):
 
         return self.classifier(combined_features)
     
-    def train_model(self, dataloader, num_epochs=3):
+    def train_model(self, train_dataloader, val_dataloader=None, num_epochs=3):
         self.train()
         for epoch in range(num_epochs):
+            # --- Training ---
+            self.train()
             total_loss = 0.0
             correct = 0
             total = 0
 
-            for batch in dataloader:
+            for batch in train_dataloader:
                 text = batch["text"]
                 tabular = batch["tabular"].to(self.device)
-                labels = batch["label"].to(self.device).long()  # Reshape for BCEWithLogitsLoss
+                labels = batch["label"].to(self.device).long()
 
                 self.optimizer.zero_grad()
                 outputs = self.forward(text, tabular)
-                
+
                 loss = self.criterion(outputs, labels)
                 loss.backward()
                 self.optimizer.step()
@@ -87,10 +89,41 @@ class FakeNewsClassifier(nn.Module):
                 predicted = torch.argmax(outputs, dim=1)
                 correct += (predicted == labels).sum().item()
                 total += labels.size(0)
-            
-            avg_loss = total_loss / len(dataloader)
-            accuracy = correct / total
-            epoch_info = f"Epoch [{epoch+1}/{num_epochs}], Loss: {avg_loss:.4f}, Accuracy: {accuracy:.4f}"
+
+            avg_train_loss = total_loss / len(train_dataloader)
+            train_accuracy = correct / total
+
+            # --- Validation ---
+            val_loss = 0.0
+            val_correct = 0
+            val_total = 0
+            if val_dataloader:
+                self.eval()
+                with torch.no_grad():
+                    for batch in val_dataloader:
+                        text = batch["text"]
+                        tabular = batch["tabular"].to(self.device)
+                        labels = batch["label"].to(self.device).long()
+
+                        outputs = self.forward(text, tabular)
+                        loss = self.criterion(outputs, labels)
+
+                        val_loss += loss.item()
+                        predicted = torch.argmax(outputs, dim=1)
+                        val_correct += (predicted == labels).sum().item()
+                        val_total += labels.size(0)
+
+                avg_val_loss = val_loss / len(val_dataloader)
+                val_accuracy = val_correct / val_total
+            else:
+                avg_val_loss = val_accuracy = None
+
+            # --- Logging ---
+            epoch_info = f"Epoch [{epoch+1}/{num_epochs}] | " \
+                        f"Train Loss: {avg_train_loss:.4f}, Train Acc: {train_accuracy:.4f}"
+            if val_dataloader:
+                epoch_info += f" | Val Loss: {avg_val_loss:.4f}, Val Acc: {val_accuracy:.4f}"
+
             logger.info(epoch_info)
             print(epoch_info)
     
