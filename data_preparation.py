@@ -13,7 +13,7 @@ def prepare_data(df: pd.DataFrame, cache_file: str = "processed_data.pkl", use_c
             print("Loading cached DataFrame...")
             return pickle.load(f)
     
-    print("Processing DataFrame for the first time...")
+    print(f"Processing DataFrame '{name}' for the first time...")
     
     readability_scorer = ReadabilityScorer()
     df_features = df["statement"].apply(readability_scorer.analyze_text_complexity).apply(pd.Series)

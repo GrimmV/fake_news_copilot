@@ -32,7 +32,7 @@ def model_training(train_df, validation_df, cache_file: str = "model/model.pkl",
     
     if not resume_training:
         # Model initialization
-        model = FakeNewsClassifier(train_ds.shape[1])
+        model = FakeNewsClassifier(len(numerical_cols))
     
     model.train_model(dataloader_train, dataloader_validation)
 
@@ -43,13 +43,12 @@ def model_training(train_df, validation_df, cache_file: str = "model/model.pkl",
     return model, dataset
 
 def _prepare_dataset(df):
+    
     numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
-
     statements = df["statement"].tolist()
     labels = df["label"].tolist()
-    tabular_data = numerical_tensor
     
-    return FakeNewsDataset(statements, tabular_data, labels)
+    return FakeNewsDataset(statements, numerical_tensor, labels)
 
 # Example usage
 if __name__ == "__main__":
@@ -63,9 +62,9 @@ if __name__ == "__main__":
     
     bert_model_name="bert-base-uncased"
     
-    train = prepare_data(train_raw, use_cache=False, name="train")
-    validation = prepare_data(validation_raw, use_cache=False, name="validation")
-    test = prepare_data(test_raw, use_cache=False, name="test")
+    train = prepare_data(train_raw, use_cache=True, name="train")
+    validation = prepare_data(validation_raw, use_cache=True, name="validation")
+    test = prepare_data(test_raw, use_cache=True, name="test")
     
     print(train.head())
     print(len(train))
