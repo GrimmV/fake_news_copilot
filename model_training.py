@@ -27,7 +27,7 @@ def model_training(train_ds, validation_ds, cache_file: str = "model/model.pkl")
             if not resume_training:
                 return model            
     
-    if not resume_training:
+    if not resume_training or not use_cached_model:
         # Model initialization
         model = FakeNewsClassifier(len(numerical_cols))
     
