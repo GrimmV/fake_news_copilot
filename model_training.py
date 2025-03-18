@@ -69,7 +69,7 @@ if __name__ == "__main__":
     print(train.head())
     print(len(train))
 
-    model, processed_dataset = model_training(train, validation, use_cache=False, resume_training=False)
+    model, processed_dataset = model_training(train, validation, use_cache=True, resume_training=True)
     
     # Assuming `processed_dataset` is an instance of FakeNewsDataset
     # Create a DataLoader for batching
