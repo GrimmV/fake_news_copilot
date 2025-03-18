@@ -14,10 +14,7 @@ import logging
 
 logging.basicConfig(filename='training.log', level=logging.INFO)
 
-def model_training(train_df, validation_df, cache_file: str = "model/model.pkl", use_cache = True, resume_training = False):
-        
-    train_ds = _prepare_dataset(train_df)
-    validation_ds = _prepare_dataset(validation_df)
+def model_training(train_ds, validation_ds, cache_file: str = "model/model.pkl", use_cache = True, resume_training = False):
     
     dataloader_train = DataLoader(train_ds, batch_size=50, shuffle=True, num_workers=1)
     dataloader_validation = DataLoader(validation_ds, batch_size=50, shuffle=False, num_workers=1)
@@ -28,7 +25,7 @@ def model_training(train_df, validation_df, cache_file: str = "model/model.pkl",
             print("Loading cached Dataset...")
             model = pickle.load(f)
             if not resume_training:
-                return model, dataset            
+                return model, train_ds            
     
     if not resume_training:
         # Model initialization
@@ -40,9 +37,9 @@ def model_training(train_df, validation_df, cache_file: str = "model/model.pkl",
     with open(cache_file, "wb") as f:
         pickle.dump(model, f)
         
-    return model, dataset
+    return model, train_ds
 
-def _prepare_dataset(df):
+def prepare_dataset(df):
     
     numerical_tensor = torch.tensor(df[numerical_cols].values, dtype=torch.float32)
     statements = df["statement"].tolist()
@@ -62,18 +59,20 @@ if __name__ == "__main__":
     
     bert_model_name="bert-base-uncased"
     
-    train = prepare_data(train_raw, use_cache=True, name="train")
-    validation = prepare_data(validation_raw, use_cache=True, name="validation")
-    test = prepare_data(test_raw, use_cache=True, name="test")
+    train_df = prepare_data(train_raw, use_cache=True, name="train")
+    validation_df = prepare_data(validation_raw, use_cache=True, name="validation")
+    test_df = prepare_data(test_raw, use_cache=True, name="test")
     
-    print(train.head())
-    print(len(train))
+    
+    train_ds = prepare_dataset(train_df)
+    validation_ds = prepare_dataset(validation_df)
+    test_ds = prepare_dataset(test_df)
 
-    model, processed_dataset = model_training(train, validation, use_cache=True, resume_training=True)
+    model, processed_dataset = model_training(train_ds, validation_ds, use_cache=True, resume_training=True)
     
     # Assuming `processed_dataset` is an instance of FakeNewsDataset
     # Create a DataLoader for batching
-    test_loader = DataLoader(processed_dataset, batch_size=2, shuffle=False, num_workers=1)
+    test_loader = DataLoader(test_ds, batch_size=2, shuffle=False, num_workers=1)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     tokenizer = BertTokenizer.from_pretrained(bert_model_name)
