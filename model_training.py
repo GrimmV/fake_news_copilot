@@ -22,7 +22,7 @@ def model_training(train_ds, validation_ds, cache_file: str = "model/model.pkl")
     # Check if cached file exists
     if os.path.exists(cache_file) and use_cached_model:
         with open(cache_file, "rb") as f:
-            print("Loading cached Dataset...")
+            print("Loading cached Model...")
             model = pickle.load(f)
             if not resume_training:
                 return model            

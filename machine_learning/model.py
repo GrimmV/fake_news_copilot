@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from transformers import BertModel, BertTokenizer
 import logging
-from config import lr, weight_decay
+from config import lr, weight_decay, dropout, bert_layers_grad
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +16,14 @@ class FakeNewsClassifier(nn.Module):
         self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
         self.bert_hidden_size = self.bert.config.hidden_size  # Typically 768 for BERT-base
         
+        # Only use last couple of layers for BERT fine-tuning
+        for param in self.bert.parameters():
+            param.requires_grad = False
+
+        # Then unfreeze only the last few layers for fine-tuning
+        for param in self.bert.encoder.layer[-bert_layers_grad:].parameters():
+            param.requires_grad = True
+        
         self.optimizer = optim.Adam(self.parameters(), lr=lr, weight_decay=weight_decay)
         self.criterion = nn.CrossEntropyLoss()  # Cross-Entropy Loss for 5 classes
         num_classes = 6
@@ -26,14 +34,14 @@ class FakeNewsClassifier(nn.Module):
         self.tabular_fc = nn.Sequential(
             nn.Linear(num_numeric_features, 64),
             nn.ReLU(),
-            nn.Dropout(0.1)
+            nn.Dropout(dropout)
         )
 
         # Fusion layer
         self.classifier = nn.Sequential(
             nn.Linear(self.bert_hidden_size + 64, 128),
             nn.ReLU(),
-            nn.Dropout(0.1),
+            nn.Dropout(dropout),
             nn.Linear(128, num_classes)
         )
         
