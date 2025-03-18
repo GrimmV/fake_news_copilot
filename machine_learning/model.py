@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from transformers import BertModel, BertTokenizer
 import logging
-from config import lr, weight_decay, dropout, bert_layers_grad
+from config import lr, weight_decay, dropout, bert_layers_grad, num_epochs
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ class FakeNewsClassifier(nn.Module):
 
         return self.classifier(combined_features)
     
-    def train_model(self, train_dataloader, val_dataloader=None, num_epochs=3):
+    def train_model(self, train_dataloader, val_dataloader=None):
         self.train()
         for epoch in range(num_epochs):
             # --- Training ---

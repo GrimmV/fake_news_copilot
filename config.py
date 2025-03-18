@@ -9,7 +9,8 @@ use_cached_model = True
 resume_training = True
 
 # model hyperparameters
-lr = 1e-5
+lr = 2e-5
 weight_decay = 1e-2
 dropout = 0.3
 bert_layers_grad = 2
+num_epochs = 100
