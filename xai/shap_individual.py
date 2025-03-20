@@ -50,7 +50,11 @@ class SHAPIndividual:
             input_ids = input_ids.to(next(self.model.parameters()).device)
             attention_mask = attention_mask.to(next(self.model.parameters()).device)
             tabular = tabular_batch.to(next(self.model.parameters()).device)
+            
+            print(input_ids)
+            print(attention_mask)
+            print(tabular)
 
-            return self.model(input_ids, attention_mask, tabular).detach().cpu().numpy()
+            return self.model(input_ids, attention_mask, tabular).detach().numpy()
 
         return wrapped_model
