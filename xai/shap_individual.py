@@ -1,7 +1,7 @@
 import shap
 from torch.utils.data import DataLoader
 import torch
-import numpy as np
+from transformers import BertTokenizer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -23,7 +23,7 @@ class SHAPIndividual:
             raw_texts.append(batch["text"][0])  # batch_size=1
             tabular_features.append(batch["tabular"][0].unsqueeze(0))  # Shape: (1, num_features)
 
-            if len(raw_texts) == 5:
+            if len(raw_texts) == 1:
                 break
 
         tabular_tensor = torch.cat(tabular_features, dim=0)  # (5, num_features)
@@ -40,12 +40,8 @@ class SHAPIndividual:
 
     def _model_wrapper(self, tabular_batch):
         def wrapped_model(raw_texts):
-            # Ensure raw_texts is a list
-            if not isinstance(raw_texts, list):
-                raw_texts = [raw_texts]
-
             # Tokenize raw text into input_ids and attention_mask
-            encoded = self.tokenizer(raw_texts, padding=True, truncation=True, return_tensors="pt")
+            encoded = self.tokenizer(list(raw_texts), padding=True, truncation=True, return_tensors="pt")
             input_ids = encoded["input_ids"]
             attention_mask = encoded["attention_mask"]
 
@@ -53,23 +49,14 @@ class SHAPIndividual:
             device = next(self.model.parameters()).device
             input_ids = input_ids.to(device)
             attention_mask = attention_mask.to(device)
+            tabular = tabular_batch.to(device)
+            
+            print(f"input_ids shape: {input_ids.shape}")
+            print(f"attention_mask shape: {attention_mask.shape}")
+            print(f"tabular shape: {tabular.shape}")
 
-            # Initialize a list to store outputs
-            outputs = []
-
-            # Process each text and corresponding tabular feature
-            for i, text in enumerate(raw_texts):
-                # Get the corresponding tabular feature
-                tabular = tabular_batch[i].unsqueeze(0).to(device)  # Shape: (1, num_features)
-
-                # Ensure the batch size is consistent
-                assert input_ids[i].unsqueeze(0).size(0) == attention_mask[i].unsqueeze(0).size(0) == tabular.size(0), "Batch size mismatch"
-
-                # Pass through the model
-                output = self.model(input_ids[i].unsqueeze(0), attention_mask[i].unsqueeze(0), tabular)
-                outputs.append(output.detach().cpu().numpy())
-
-            # Stack outputs to match the expected shape
-            return np.vstack(outputs)
+            # Pass through the model
+            outputs = self.model(input_ids, attention_mask, tabular)
+            return outputs.detach().cpu().numpy()
 
         return wrapped_model
