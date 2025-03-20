@@ -20,8 +20,6 @@ class SHAPIndividual:
         tabular_features = []
 
         for batch in loader:
-            print("This is the text: \n")
-            print(batch["text"])
             raw_texts.append(batch["text"][0])  # batch_size=1
             tabular_features.append(batch["tabular"][0].unsqueeze(0))  # Shape: (1, num_features)
 
@@ -33,6 +31,9 @@ class SHAPIndividual:
         # Define SHAP explainer with raw text masker
         masker = shap.maskers.Text(tokenizer=self.tokenizer)
         explainer = shap.Explainer(self._model_wrapper(tabular_tensor), masker)
+        
+        print("This is the text: \n")
+        print(raw_texts)
 
         shap_values = explainer(raw_texts)  # raw_texts is a list of strings
         print(shap_values)
