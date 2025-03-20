@@ -19,11 +19,11 @@ class SHAPIndividual:
         
         # Iterate through the DataLoader to extract test data
         for batch in loader:
-            input_sample = {
-                "input_ids": batch["input_ids"],
-                "attention_mask": batch["attention_mask"],
-                "tabular": batch["tabular"]
-            }
+            input_sample = (
+                batch["input_ids"],
+                batch["attention_mask"],
+                batch["tabular"]
+            )
             
             shap_values = explainer(input_sample)
             print(shap_values)
