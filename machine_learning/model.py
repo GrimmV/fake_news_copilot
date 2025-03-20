@@ -47,28 +47,29 @@ class FakeNewsClassifier(nn.Module):
         
         self.to(self.device)
 
-    def forward(self, input_text, numerical_features):
-        """Differentiable forward pass"""
+    def forward(self, input_ids, attention_mask, numerical_features, token_type_ids=None):
+        """Differentiable forward pass using pre-tokenized inputs"""
         
-        encoded_input = self.tokenizer(
-            input_text,
-            padding=True,
-            truncation=True,
-            return_tensors="pt"
-        )
-        
-        encoded_input = {k: v.to(self.device) for k, v in encoded_input.items()}
-        
-        bert_output = self.bert(**encoded_input).last_hidden_state[:, 0, :]
+        # Prepare BERT input
+        bert_inputs = {
+            "input_ids": input_ids.to(self.device),
+            "attention_mask": attention_mask.to(self.device)
+        }
 
-        # Normalize numerical features
+        if token_type_ids is not None:
+            bert_inputs["token_type_ids"] = token_type_ids.to(self.device)
+
+        # Get BERT output (use [CLS] token)
+        bert_output = self.bert(**bert_inputs).last_hidden_state[:, 0, :]
+
+        # Normalize and project numerical features
         x = self.batch_norm(numerical_features)
-
         tabular_features = self.tabular_fc(x)
 
-        # Combine with BERT output
+        # Concatenate BERT and tabular features
         combined_features = torch.cat((bert_output, tabular_features), dim=1)
 
+        # Final classification layer
         return self.classifier(combined_features)
     
     def train_model(self, train_dataloader, val_dataloader=None):
@@ -81,12 +82,13 @@ class FakeNewsClassifier(nn.Module):
             total = 0
 
             for batch in train_dataloader:
-                text = batch["text"]
+                input_ids = batch["input_ids"]
+                attention_mask = batch["attention_mask"]
                 tabular = batch["tabular"].to(self.device)
                 labels = batch["label"].to(self.device).long()
 
                 self.optimizer.zero_grad()
-                outputs = self.forward(text, tabular)
+                outputs = self.forward(input_ids, attention_mask, tabular)
 
                 loss = self.criterion(outputs, labels)
                 loss.backward()
@@ -108,11 +110,12 @@ class FakeNewsClassifier(nn.Module):
                 self.eval()
                 with torch.no_grad():
                     for batch in val_dataloader:
-                        text = batch["text"]
+                        input_ids = batch["input_ids"]
+                        attention_mask = batch["attention_mask"]
                         tabular = batch["tabular"].to(self.device)
                         labels = batch["label"].to(self.device).long()
 
-                        outputs = self.forward(text, tabular)
+                        outputs = self.forward(input_ids, attention_mask, tabular)
                         loss = self.criterion(outputs, labels)
 
                         val_loss += loss.item()

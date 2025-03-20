@@ -1,7 +1,6 @@
 import pandas as pd
 from machine_learning.model import FakeNewsClassifier
 from transformers import BertTokenizer
-from machine_learning.fake_news_dataset import FakeNewsDataset
 from torch.utils.data import DataLoader
 from data_preparation import prepare_data
 import datasets
@@ -39,31 +38,25 @@ def model_training(train_ds, validation_ds, cache_file: str = "model/model.pkl")
         
     return model
 
-def model_testing(test_ds, model, bert_model_name="bert-base-uncased"):
+def model_testing(test_ds, model):
     
     # Assuming `processed_dataset` is an instance of FakeNewsDataset
     # Create a DataLoader for batching
     test_loader = DataLoader(test_ds, batch_size=2, shuffle=False, num_workers=1)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    tokenizer = BertTokenizer.from_pretrained(bert_model_name)
 
     # Iterate through the DataLoader to extract test data
     for batch in test_loader:
         # Extract inputs and labels
-        texts = batch["text"]  # List of tokenized texts (if tokenized) or raw texts
+        input_ids = batch["input_ids"]
+        attention_mask = batch["attention_mask"]
         tabular_features = batch["tabular"].to(device)  # Move tabular data to device
         labels = batch["label"].to(device).long()  # Move labels to device and convert to long
         
-        # If texts are not tokenized, tokenize them here
-        # Example: Using a tokenizer for transformer models
-        inputs = tokenizer(texts, return_tensors="pt", padding=True, truncation=True)
-        input_ids = inputs["input_ids"].to(device)
-        attention_mask = inputs["attention_mask"].to(device)
-
         # Forward pass
         with torch.no_grad():
-            sample_output = model(texts, tabular_features)
+            sample_output = model(input_ids, attention_mask, tabular_features)
 
         # Print statements
         print(f"tabular features: {tabular_features.cpu().numpy()}")
