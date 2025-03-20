@@ -20,6 +20,8 @@ class SHAPIndividual:
         tabular_features = []
 
         for batch in loader:
+            print("This is the text: \n")
+            print(batch["text"])
             raw_texts.append(batch["text"][0])  # batch_size=1
             tabular_features.append(batch["tabular"][0].unsqueeze(0))  # Shape: (1, num_features)
 
@@ -37,7 +39,7 @@ class SHAPIndividual:
 
     def _model_wrapper(self, tabular_batch):
         def wrapped_model(raw_texts):
-            print(raw_texts)
+            # print(raw_texts)
             # Tokenize raw text into input_ids and attention_mask
             encoded = self.tokenizer(raw_texts, padding=True, truncation=True, return_tensors="pt")
             input_ids = encoded["input_ids"]
