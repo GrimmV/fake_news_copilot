@@ -31,7 +31,7 @@ class RandomForestTextClassifier:
         X, y = self.preprocess_data(text_data, labels)
         print(y)
         for elem in X:
-            print(elem.to_list())
+            print(elem.tolist())
             break
         self.clf.fit(X, y)
     
