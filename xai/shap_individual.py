@@ -14,11 +14,16 @@ class SHAPIndividual:
 
     def compute_values(self, ds):
         
-        combined_masker = self._masking()
+        loader = DataLoader(ds, batch_size=5, shuffle=False, num_workers=1)
+        
+        sample_batch = loader[0]["tabular"][0]
+        
+        print(sample_batch)
+        
+        combined_masker = self._masking(sample_batch)
         
         explainer = shap.Explainer(self._model_wrapper, masker=combined_masker)
         
-        loader = DataLoader(ds, batch_size=5, shuffle=False, num_workers=1)
         
         # Iterate through the DataLoader to extract test data
         for batch in loader:
@@ -38,10 +43,10 @@ class SHAPIndividual:
         
         return self.model(input_ids, attention_mask, tabular).detach().numpy()
     
-    def _masking(self):
+    def _masking(self, tabular_sample):
         
         # Define the custom masker for both text and structured inputs
         text_masker = shap.maskers.Text()  # Masker for text inputs
-        structured_masker = shap.maskers.Independent(masker=shap.maskers.Independent())  # Independent mask for structured
+        structured_masker = shap.maskers.Independent(data=tabular_sample)  # Independent mask for structured
         
         return CombinedMasker(text_masker, structured_masker)
