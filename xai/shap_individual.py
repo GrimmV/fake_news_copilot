@@ -2,61 +2,46 @@ import shap
 from torch.utils.data import DataLoader
 import torch
 from transformers import BertTokenizer
+from combined_masker import CombinedMasker
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class SHAPIndividual:
     
-    def __init__(self, model):
+    def __init__(self, model, bert_model_name="bert-base-uncased"):
         self.model = model
-        self.tokenizer = None
+        self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
 
     def compute_values(self, ds):
-        loader = DataLoader(ds, batch_size=1, shuffle=False, num_workers=1)
-        self.tokenizer = ds.tokenizer
-
-        # Collect raw text and tabular features for SHAP
-        raw_texts = []
-        tabular_features = []
-
-        for batch in loader:
-            raw_texts.append(batch["text"][0])  # batch_size=1
-            tabular_features.append(batch["tabular"][0].unsqueeze(0))  # Shape: (1, num_features)
-
-            if len(raw_texts) == 1:
-                break
-
-        tabular_tensor = torch.cat(tabular_features, dim=0)  # (5, num_features)
-
-        # Define SHAP explainer with raw text masker
-        masker = shap.maskers.Text(tokenizer=self.tokenizer)
-        explainer = shap.Explainer(self._model_wrapper(tabular_tensor), masker)
         
-        print("This is the text: \n")
-        print(raw_texts)
-
-        shap_values = explainer(raw_texts)  # raw_texts is a list of strings
-        print(shap_values)
-
-    def _model_wrapper(self, tabular_batch):
-        def wrapped_model(raw_texts):
-            # Tokenize raw text into input_ids and attention_mask
-            encoded = self.tokenizer(list(raw_texts), padding=True, truncation=True, return_tensors="pt")
-            input_ids = encoded["input_ids"]
-            attention_mask = encoded["attention_mask"]
-
-            # Move to same device as model if needed
-            device = next(self.model.parameters()).device
-            input_ids = input_ids.to(device)
-            attention_mask = attention_mask.to(device)
-            tabular = tabular_batch.to(device)
+        combined_masker = self._masking()
+        
+        explainer = shap.Explainer(self._model_wrapper, masker=combined_masker)
+        
+        loader = DataLoader(ds, batch_size=5, shuffle=False, num_workers=1)
+        
+        # Iterate through the DataLoader to extract test data
+        for batch in loader:
+            input_sample = (
+                batch["input_ids"],
+                batch["attention_mask"],
+                batch["tabular"]
+            )
             
-            print(f"input_ids shape: {input_ids[-1].shape}")
-            print(f"attention_mask shape: {attention_mask[-1].shape}")
-            print(f"tabular shape: {tabular.shape}")
+            shap_values = explainer(input_sample)
+            print(shap_values)
+            break
+            
 
-            # Pass through the model
-            outputs = self.model(input_ids[-1], attention_mask[-1], tabular)
-            return outputs.detach().cpu().numpy()
-
-        return wrapped_model
+    def _model_wrapper(self, input_sample):
+        input_ids, attention_mask, tabular = input_sample
+        
+        return self.model(input_ids, attention_mask, tabular).detach().numpy()
+    
+    def _masking(self):
+        
+        # Define the custom masker for both text and structured inputs
+        text_masker = shap.maskers.Text()  # Masker for text inputs
+        structured_masker = shap.maskers.Independent(masker=shap.maskers.Tuples([]))  # Independent mask for structured
+        
+        return CombinedMasker(text_masker, structured_masker)
