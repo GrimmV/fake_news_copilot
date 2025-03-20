@@ -13,11 +13,14 @@ class SHAPIndividual:
         
         explainer = shap.Explainer(self._model_wrapper, masker=shap.maskers.Text(), algorithm="partition")
         
-        for elem in ds:
+        loader = DataLoader(ds, batch_size=5, shuffle=False, num_workers=1)
+        
+        for batch in loader:
             
-            shap_values = explainer(elem)
+            shap_values = explainer(batch)
             print(shap_values)
             break
+            
             
 
     def _model_wrapper(self, combined_input):
