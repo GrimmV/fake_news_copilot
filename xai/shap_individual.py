@@ -31,5 +31,6 @@ class SHAPIndividual:
             
 
     def _model_wrapper(self, input_sample):
+        input_ids, attention_mask, tabular = input_sample
         
-        return self.model(input_sample["input_ids"], input_sample["attention_mask"], input_sample["tabular"]).detach().numpy()
+        return self.model(input_ids, attention_mask, tabular).detach().numpy()
