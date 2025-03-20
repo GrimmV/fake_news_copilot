@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 import pickle 
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
 
 from machine_learning.readability_scorer import ReadabilityScorer
 from machine_learning.sentiment_model import SentimentModel
@@ -12,7 +12,7 @@ class TextFeatureExtractor:
     """Class to extract features from text data."""
     
     def __init__(self):
-        self.vectorizer = CountVectorizer()
+        self.vectorizer = TfidfVectorizer()
     
     def extract_bow_features(self, text_data):
         """Extract bag-of-words features."""
