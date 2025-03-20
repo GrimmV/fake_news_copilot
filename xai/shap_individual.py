@@ -42,6 +42,6 @@ class SHAPIndividual:
         
         # Define the custom masker for both text and structured inputs
         text_masker = shap.maskers.Text()  # Masker for text inputs
-        structured_masker = shap.maskers.Independent(masker=shap.maskers.Tuples([]))  # Independent mask for structured
+        structured_masker = shap.maskers.Independent(masker=shap.maskers.Independent())  # Independent mask for structured
         
         return CombinedMasker(text_masker, structured_masker)
