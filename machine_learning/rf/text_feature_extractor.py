@@ -30,7 +30,7 @@ class TextFeatureExtractor:
             with open(filename, "rb") as f:
                 print("Loading cached DataFrame...")
                 df = pickle.load(f)
-                return df
+                return df.to_numpy()
         
         print(f"Processing DataFrame '{name}' for the first time...")
         
@@ -45,12 +45,10 @@ class TextFeatureExtractor:
         sentiment_model = SentimentModel()
         df["sentiment"] = sentiment_model.generate(df["statement"].tolist())
         
+        df.drop(columns=["statement"], inplace=True)
+        
         # Save processed DataFrame for future use
         with open(filename, "wb") as f:
             pickle.dump(df, f)
-
-        df.drop(columns=["statement"])
-        
-        print(df.head())
         
         return df.to_numpy()
