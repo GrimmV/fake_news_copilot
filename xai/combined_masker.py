@@ -1,6 +1,5 @@
-import shap
 
-class CombinedMasker(shap.maskers.MaskedModel):
+class CombinedMasker:
     def __init__(self, masker_text, masker_structured):
         self.masker_text = masker_text
         self.masker_structured = masker_structured
