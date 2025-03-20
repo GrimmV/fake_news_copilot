@@ -40,21 +40,22 @@ class SHAPIndividual:
 
     def _model_wrapper(self, tabular_batch):
         def wrapped_model(raw_texts):
-            # print(raw_texts)
             # Tokenize raw text into input_ids and attention_mask
             encoded = self.tokenizer(list(raw_texts), padding=True, truncation=True, return_tensors="pt")
             input_ids = encoded["input_ids"]
             attention_mask = encoded["attention_mask"]
 
             # Move to same device as model if needed
-            input_ids = input_ids.to(next(self.model.parameters()).device)
-            attention_mask = attention_mask.to(next(self.model.parameters()).device)
-            tabular = tabular_batch.to(next(self.model.parameters()).device)
+            device = next(self.model.parameters()).device
+            input_ids = input_ids.to(device)
+            attention_mask = attention_mask.to(device)
+            tabular = tabular_batch.to(device)
             
-            print(input_ids)
-            print(attention_mask)
-            print(tabular)
+            # Ensure the batch size is consistent
+            assert input_ids.size(0) == attention_mask.size(0) == tabular.size(0), "Batch size mismatch"
 
-            return self.model(input_ids, attention_mask, tabular).detach().numpy()
+            # Pass through the model
+            outputs = self.model(input_ids, attention_mask, tabular)
+            return outputs.detach().cpu().numpy()
 
         return wrapped_model
