@@ -51,12 +51,12 @@ class SHAPIndividual:
             attention_mask = attention_mask.to(device)
             tabular = tabular_batch.to(device)
             
-            print(f"input_ids shape: {input_ids.shape}")
-            print(f"attention_mask shape: {attention_mask.shape}")
+            print(f"input_ids shape: {input_ids[-1].shape}")
+            print(f"attention_mask shape: {attention_mask[-1].shape}")
             print(f"tabular shape: {tabular.shape}")
 
             # Pass through the model
-            outputs = self.model(input_ids, attention_mask, tabular)
+            outputs = self.model(input_ids[-1], attention_mask[-1], tabular)
             return outputs.detach().cpu().numpy()
 
         return wrapped_model
