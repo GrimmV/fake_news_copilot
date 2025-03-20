@@ -25,7 +25,7 @@ class SHAPIndividual:
         
         combined_masker = self._masking(sample_batch)
         
-        explainer = shap.Explainer(self._model_wrapper, masker=combined_masker)
+        explainer = shap.Explainer(self._model_wrapper, masker=combined_masker, algorithm="permutation")
         
         
         # Iterate through the DataLoader to extract test data
