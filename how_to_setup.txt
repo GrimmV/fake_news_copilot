@@ -1,0 +1,29 @@
+
+Starting environment or clean VM with e.g.:
+
+sudo docker run -it --name fake_news --gpus=1 -p 8521:8888 nvidia/cuda:12.8.0-cudnn-devel-ubuntu24.04
+
+Prepare Python:
+
+apt-get update
+apt-get install git
+
+https://github.com/GrimmV/fake_news_copilot.git
+
+apt install python3
+python3 -m venv .venv
+cd fake_news_copilot
+source .venv/bin/activate
+
+Abhängigkeiten:
+
+pip install pandas
+pip install torch
+pip install transformers
+pip install scikit-learn
+pip install textstat
+pip install spacy
+pip install nltk
+python -m spacy download en_core_web_sm
+pip install datasets
+

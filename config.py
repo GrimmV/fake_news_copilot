@@ -10,7 +10,11 @@ resume_training = True
 
 # model hyperparameters
 lr = 2e-5
-weight_decay = 1e-2
+weight_decay = 1e-3
 dropout = 0.3
-bert_layers_grad = 2
+bert_layers_grad = 4
 num_epochs = 100
+
+# storage
+
+model_location = "model/model.pkl"
