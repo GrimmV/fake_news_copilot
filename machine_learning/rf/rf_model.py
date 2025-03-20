@@ -29,13 +29,14 @@ class RandomForestTextClassifier:
         
         print(combined_features.shape)
         print(combined_features[0])
+        print(type(combined_features))
         
         return combined_features, labels
     
     def train(self, text_data, labels):
         """Train the RandomForest classifier."""
         X, y = self.preprocess_data(text_data, labels)
-        print(X)
+        print(labels)
         self.clf.fit(X, y)
     
     def evaluate(self, text_data, labels):
