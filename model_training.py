@@ -56,7 +56,7 @@ def model_testing(test_ds, model):
         
         # Forward pass
         with torch.no_grad():
-            sample_output = model(input_ids, attention_mask, tabular_features)
+            sample_output = model((input_ids, attention_mask, tabular_features))
 
         # Print statements
         print(f"tabular features: {tabular_features.cpu().numpy()}")

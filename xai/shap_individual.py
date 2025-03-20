@@ -33,8 +33,8 @@ class SHAPIndividual:
             )
             break
         
-        explainer = shap.DeepExplainer(self.model, sample)
+        explainer = shap.DeepExplainer(self.model, background)
         
-        shap_values = explainer.shap_values(background)
+        shap_values = explainer.shap_values(sample)
         print(shap_values)
                
