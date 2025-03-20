@@ -16,7 +16,10 @@ class SHAPIndividual:
         
         loader = DataLoader(ds, batch_size=5, shuffle=False, num_workers=1)
         
-        sample_batch = loader[0]["tabular"][0]
+        for batch in loader:
+            sample_batch = batch["tabular"][0]
+            break
+        
         
         print(sample_batch)
         
