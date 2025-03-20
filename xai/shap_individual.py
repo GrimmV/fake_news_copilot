@@ -51,6 +51,10 @@ class SHAPIndividual:
             attention_mask = attention_mask.to(device)
             tabular = tabular_batch.to(device)
             
+            print(f"input_ids shape: {input_ids.shape}")
+            print(f"attention_mask shape: {attention_mask.shape}")
+            print(f"tabular shape: {tabular.shape}")
+            
             # Ensure the batch size is consistent
             assert input_ids.size(0) == attention_mask.size(0) == tabular.size(0), "Batch size mismatch"
 
