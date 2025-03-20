@@ -17,7 +17,7 @@ class SHAPIndividual:
         loader = DataLoader(ds, batch_size=5, shuffle=False, num_workers=1)
         
         for batch in loader:
-            sample_batch = batch["tabular"][0].detach().numpy()
+            sample_batch = batch["tabular"][0:2].detach().numpy()
             break
         
         
