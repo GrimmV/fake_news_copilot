@@ -49,6 +49,6 @@ class TextFeatureExtractor:
         with open(filename, "wb") as f:
             pickle.dump(df, f)
 
-        df.drop("statement", axis=1, inplace=True)
+        df.drop("statement", axis=0, inplace=True)
         
         return df.to_numpy()
