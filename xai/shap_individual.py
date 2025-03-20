@@ -42,7 +42,7 @@ class SHAPIndividual:
         def wrapped_model(raw_texts):
             # print(raw_texts)
             # Tokenize raw text into input_ids and attention_mask
-            encoded = self.tokenizer(raw_texts, padding=True, truncation=True, return_tensors="pt")
+            encoded = self.tokenizer(list(raw_texts), padding=True, truncation=True, return_tensors="pt")
             input_ids = encoded["input_ids"]
             attention_mask = encoded["attention_mask"]
 
