@@ -29,7 +29,7 @@ class RandomForestTextClassifier:
         
         print(combined_features.shape)
         print(combined_features[0])
-        print(type(combined_features))
+        print(type(combined_features[0]))
         
         return combined_features, labels
     
