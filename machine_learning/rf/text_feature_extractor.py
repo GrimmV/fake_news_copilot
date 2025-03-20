@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 import pickle 
-from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 from machine_learning.readability_scorer import ReadabilityScorer
 from machine_learning.sentiment_model import SentimentModel
