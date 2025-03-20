@@ -7,12 +7,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class SHAPIndividual:
     
-    def __init__(self, model, tokenizer):
+    def __init__(self, model):
         self.model = model
+        self.tokenizer = None
 
     def compute_values(self, ds):
         loader = DataLoader(ds, batch_size=1, shuffle=False, num_workers=1)
-        tokenizer = ds.tokenizer
+        self.tokenizer = ds.tokenizer
 
         # Collect raw text and tabular features for SHAP
         raw_texts = []
@@ -28,7 +29,7 @@ class SHAPIndividual:
         tabular_tensor = torch.cat(tabular_features, dim=0)  # (5, num_features)
 
         # Define SHAP explainer with raw text masker
-        masker = shap.maskers.Text(tokenizer=tokenizer)
+        masker = shap.maskers.Text(tokenizer=self.tokenizer)
         explainer = shap.Explainer(self._model_wrapper(tabular_tensor), masker)
 
         shap_values = explainer(raw_texts)  # raw_texts is a list of strings
@@ -37,7 +38,7 @@ class SHAPIndividual:
     def _model_wrapper(self, tabular_batch):
         def wrapped_model(raw_texts):
             # Tokenize raw text into input_ids and attention_mask
-            encoded = tokenizer(raw_texts, padding=True, truncation=True, return_tensors="pt")
+            encoded = self.tokenizer(raw_texts, padding=True, truncation=True, return_tensors="pt")
             input_ids = encoded["input_ids"]
             attention_mask = encoded["attention_mask"]
 
