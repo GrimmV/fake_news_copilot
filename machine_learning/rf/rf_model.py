@@ -27,6 +27,9 @@ class RandomForestTextClassifier:
         # Combine features
         combined_features = np.hstack((bow_features, meta_features))
         
+        print(combined_features.shape)
+        print(combined_features[0])
+        
         return combined_features, labels
     
     def train(self, text_data, labels):
