@@ -4,8 +4,8 @@ from transformers import BertTokenizer
 
 class FakeNewsDataset(Dataset):
     def __init__(self, texts, tabular, labels, bert_model_name="bert-base-uncased"):
-        tokenizer = BertTokenizer.from_pretrained(bert_model_name)
-        inputs = tokenizer(texts, return_tensors="pt", padding=True, truncation=True)
+        self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
+        inputs = self.tokenizer(texts, return_tensors="pt", padding=True, truncation=True)
         self.texts = texts
         self.input_ids = inputs["input_ids"]
         self.attention_mask = inputs["attention_mask"]
