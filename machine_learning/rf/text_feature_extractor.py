@@ -11,12 +11,13 @@ from config import use_cached_data
 class TextFeatureExtractor:
     """Class to extract features from text data."""
     
-    def __init__(self):
+    def __init__(self, train_text):
         self.vectorizer = TfidfVectorizer()
+        self.vectorizer.fit_transform(train_text).toarray()
     
     def extract_bow_features(self, text_data):
         """Extract bag-of-words features."""
-        return self.vectorizer.fit_transform(text_data).toarray()
+        return self.vectorizer.transform(text_data).toarray()
     
     def extract_meta_features(self, text_data):
         """Extract meta-information features like text length and sentiment."""

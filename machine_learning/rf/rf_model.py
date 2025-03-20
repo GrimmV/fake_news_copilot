@@ -7,11 +7,11 @@ import numpy as np
 class RandomForestTextClassifier:
     """Class to train and evaluate a RandomForest classifier for text classification."""
     
-    def __init__(self, n_estimators=100, random_state=42):
+    def __init__(self, n_estimators=100, random_state=42, train_text):
         self.n_estimators = n_estimators
         self.random_state = random_state
         self.clf = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
-        self.feature_extractor = TextFeatureExtractor()
+        self.feature_extractor = TextFeatureExtractor(train_text)
     
     def preprocess_data(self, text_data, labels):
         """Preprocess the data by extracting features and combining them."""
@@ -29,10 +29,8 @@ class RandomForestTextClassifier:
     def train(self, text_data, labels):
         """Train the RandomForest classifier."""
         X, y = self.preprocess_data(text_data, labels)
-        print(y)
-        for elem in X:
-            print(elem.tolist())
-            break
+        
+        print(X.shape)
         self.clf.fit(X, y)
     
     def evaluate(self, text_data, labels):
