@@ -25,7 +25,7 @@ class SHAPIndividual:
         
         combined_masker = self._masking(sample_batch)
         
-        explainer = shap.Explainer(self._model_wrapper, masker=combined_masker, algorithm="partition")
+        explainer = shap.Explainer(self._model_wrapper, masker=combined_masker, algorithm="partition", max_evals=1131)
         
         
         # Iterate through the DataLoader to extract test data
