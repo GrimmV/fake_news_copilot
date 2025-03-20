@@ -2,7 +2,7 @@ import shap
 from torch.utils.data import DataLoader
 import torch
 from transformers import BertTokenizer
-from combined_masker import CombinedMasker
+from xai.combined_masker import CombinedMasker
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
