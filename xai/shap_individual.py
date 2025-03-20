@@ -17,9 +17,9 @@ class SHAPIndividual:
         
         for batch in loader:
             background = (
-                batch["input_ids"].numpy(),
-                batch["attention_mask"].numpy(),
-                batch["tabular"].numpy()
+                batch["input_ids"],
+                batch["attention_mask"],
+                batch["tabular"]
             )
             break
         
