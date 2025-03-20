@@ -62,7 +62,7 @@ class FakeNewsClassifier(nn.Module):
         bert_output = self.bert(**bert_inputs).last_hidden_state[:, 0, :]
 
         # Normalize and project numerical features
-        x = self.batch_norm(numerical_features)
+        x = self.batch_norm(numerical_features.to(self.device))
         tabular_features = self.tabular_fc(x)
 
         # Concatenate BERT and tabular features
