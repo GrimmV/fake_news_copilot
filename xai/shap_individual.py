@@ -25,7 +25,7 @@ class SHAPIndividual:
         
         combined_masker = self._masking(sample_batch)
         
-        explainer = shap.Explainer(self._model_wrapper, masker=combined_masker, max_evals=1131)
+        explainer = shap.Explainer(self._model_wrapper)
         
         
         # Iterate through the DataLoader to extract test data
@@ -36,7 +36,7 @@ class SHAPIndividual:
                 batch["tabular"]
             )
             
-            shap_values = explainer(input_sample)
+            shap_values = explainer()
             print(shap_values)
             break
             
