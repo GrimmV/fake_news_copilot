@@ -35,6 +35,7 @@ class RandomForestTextClassifier:
     def train(self, text_data, labels):
         """Train the RandomForest classifier."""
         X, y = self.preprocess_data(text_data, labels)
+        print(X)
         self.clf.fit(X, y)
     
     def evaluate(self, text_data, labels):
