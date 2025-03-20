@@ -8,48 +8,33 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class SHAPIndividual:
     
-    def __init__(self, model, bert_model_name="bert-base-uncased"):
+    def __init__(self, model):
         self.model = model
-        self.tokenizer = BertTokenizer.from_pretrained(bert_model_name)
 
     def compute_values(self, ds):
         
-        loader = DataLoader(ds, batch_size=5, shuffle=False, num_workers=1)
+        loader = DataLoader(ds, batch_size=50, shuffle=False, num_workers=1)
         
         for batch in loader:
-            sample_batch = batch["tabular"][0:2].detach().numpy()
-            break
-        
-        
-        print(sample_batch)
-        
-        combined_masker = self._masking(sample_batch)
-        
-        explainer = shap.Explainer(self._model_wrapper)
-        
-        
-        # Iterate through the DataLoader to extract test data
-        for batch in loader:
-            input_sample = (
-                batch["input_ids"],
-                batch["attention_mask"],
-                batch["tabular"]
+            background = (
+                batch["input_ids"].numpy(),
+                batch["attention_mask"].numpy(),
+                batch["tabular"].numpy()
             )
-            
-            shap_values = explainer()
-            print(shap_values)
             break
-            
-
-    def _model_wrapper(self, input_sample):
-        input_ids, attention_mask, tabular = input_sample
         
-        return self.model(input_ids, attention_mask, tabular).detach().numpy()
+        explainer = shap.DeepExplainer(self.model_predict, background)
+        
+        shap_values = explainer.shap_values(background)
+        print(shap_values)
+               
     
-    def _masking(self, tabular_sample):
-        
-        # Define the custom masker for both text and structured inputs
-        text_masker = shap.maskers.Text()  # Masker for text inputs
-        structured_masker = shap.maskers.Independent(data=tabular_sample)  # Independent mask for structured
-        
-        return CombinedMasker(text_masker, structured_masker)
+    # Define your model predict function
+    def model_predict(self, input_ids, attention_mask, tabular_features):
+        input_ids = torch.tensor(input_ids)
+        attention_mask = torch.tensor(attention_mask)
+        tabular_features = torch.tensor(tabular_features)
+
+        with torch.no_grad():
+            outputs = self.model(input_ids=input_ids, attention_mask=attention_mask, tabular_features=tabular_features)
+        return outputs
