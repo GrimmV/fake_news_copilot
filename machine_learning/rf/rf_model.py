@@ -21,6 +21,9 @@ class RandomForestTextClassifier:
         # Extract meta-information features
         meta_features = self.feature_extractor.extract_meta_features(text_data)
         
+        print(bow_features.shape)
+        print(meta_features.shape)
+        
         # Combine features
         combined_features = np.hstack((bow_features, meta_features))
         
