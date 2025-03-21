@@ -14,12 +14,6 @@ class SHAPIndividual:
         
         # Compute SHAP values
         self.shap_values = self.explainer.shap_values(data, check_additivity=False)
-        
         self.feature_names = np.concatenate((self.bow_feature_names, self.meta_feature_names))
-        
-        print(self.feature_names)
-        
-        print(self.shap_values)
-        print(self.shap_values.shape)
 
-        
+
