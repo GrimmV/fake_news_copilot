@@ -45,5 +45,5 @@ if __name__ == "__main__":
     
     model = _retrieve_model()
     
-    shap_explainer = SHAPIndividual(model, bow_feature_names, meta_feature_names)
+    shap_explainer = SHAPIndividual(model, background_data=combined_features[5:205], bow_feature_names=bow_feature_names, meta_feature_names=meta_feature_names)
     shap_explainer.explain(combined_features[:5])

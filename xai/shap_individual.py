@@ -5,8 +5,8 @@ from transformers import BertTokenizer
     
 class SHAPIndividual:
     
-    def __init__(self, model, bow_feature_names, meta_feature_names):
-        self.explainer = shap.TreeExplainer(model)
+    def __init__(self, model, background_data, bow_feature_names, meta_feature_names):
+        self.explainer = shap.TreeExplainer(model, data=background_data)
         self.bow_feature_names = bow_feature_names
         self.meta_feature_names = meta_feature_names
     
