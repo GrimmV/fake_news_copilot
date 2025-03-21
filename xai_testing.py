@@ -1,34 +1,46 @@
 import pandas as pd
-import datasets
+import numpy as np
 import os
 import pickle
+import datasets
+from sklearn.model_selection import train_test_split
 
-from model_training import model_testing
-from data_preparation import prepare_data
+from machine_learning.rf.text_feature_extractor import TextFeatureExtractor
 from xai.shap_individual import SHAPIndividual
-from config import model_location
+
+def _retrieve_model(path="model_rf.pkl"):
+    cache = f"model/{path}"
+        
+    # Check if cached file exists
+    if os.path.exists(cache):
+        with open(cache, "rb") as f:
+            print("Loading cached Model...")
+            model = pickle.load(f)
+            return model
+    else:
+        print("No model found. Train a model first, to explain it.")
+        return None
 
 # Example usage
 if __name__ == "__main__":
     
-    # Load training dataset
     dataset = "chengxuphd/liar2"
     dataset = datasets.load_dataset(dataset)
     train_raw = pd.DataFrame(dataset["train"])
     
-    train_ds = prepare_data(train_raw, name="train")
+    X_train, X_test, y_train, y_test = train_test_split(train_raw['statement'].to_list(), train_raw['label'].to_list(), test_size=0.2, random_state=42)
     
-    # Check if cached file exists
-    if os.path.exists(model_location):
-        with open(model_location, "rb") as f:
-            print("Loading cached Model...")
-            model = pickle.load(f)
-    else:
-        print("The model does not exist. Train a model first.")
+    extractor = TextFeatureExtractor(X_train)
     
-    print(train_ds[0])
+    bow_features = extractor.extract_bow_features(X_train)
+    meta_features, meta_feature_names = extractor.extract_meta_features(X_train)
     
-    model_testing(train_ds, model)
+    bow_feature_names = extractor.vectorizer.get_feature_names_out()
     
-    shap_individual = SHAPIndividual(model)
-    shap_individual.compute_values(train_ds)
+    # Combine features
+    combined_features = np.hstack((bow_features, meta_features))
+    
+    model = _retrieve_model()
+    
+    shap_explainer = SHAPIndividual(model, bow_feature_names, meta_feature_names)
+    shap_explainer.explain(combined_features)
