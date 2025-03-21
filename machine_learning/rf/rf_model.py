@@ -11,10 +11,10 @@ from config import use_cached_model
 class RandomForestTextClassifier:
     """Class to train and evaluate a RandomForest classifier for text classification."""
     
-    def __init__(self, train_text, n_estimators=100, random_state=42):
+    def __init__(self, train_text, n_estimators=100, random_state=42, max_depth=10):
         self.n_estimators = n_estimators
         self.random_state = random_state
-        self.clf = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
+        self.clf = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state, max_depth=max_depth)
         self.feature_extractor = TextFeatureExtractor(train_text)
     
     def preprocess_data(self, text_data, labels, name = "train"):
@@ -33,11 +33,13 @@ class RandomForestTextClassifier:
         
         return combined_features, labels
     
-    def train(self, text_data, labels, cache_file: str = "model/model_rf.pkl"):
+    def train(self, text_data, labels, cache_file: str = "model_rf.pkl"):
+        
+        cache = f"model/{cache_file}"
         
         # Check if cached file exists
-        if os.path.exists(cache_file) and use_cached_model:
-            with open(cache_file, "rb") as f:
+        if os.path.exists(cache) and use_cached_model:
+            with open(cache, "rb") as f:
                 print("Loading cached Model...")
                 model = pickle.load(f)
                 self.clf = model
@@ -48,7 +50,7 @@ class RandomForestTextClassifier:
             
             self.clf.fit(X, y)
             # Save processed DataFrame for future use
-            with open(cache_file, "wb") as f:
+            with open(cache, "wb") as f:
                 pickle.dump(self.clf, f)
         
 
