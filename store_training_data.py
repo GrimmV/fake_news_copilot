@@ -29,7 +29,7 @@ if __name__ == "__main__":
     
     model = _retrieve_model()
     
-    X_train, X_test, y_train, y_test = train_test_split(train_raw['statement'].to_list(), train_raw['label'].to_list(), test_size=0.2, shuffle=False)
+    X_train, X_test, _, _ = train_test_split(train_raw['statement'].to_list(), train_raw['label'].to_list(), test_size=0.0, shuffle=False)
     
     extractor = TextFeatureExtractor(X_train)
 
