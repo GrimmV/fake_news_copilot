@@ -16,11 +16,3 @@ class SHAPIndividual:
         self.shap_values = self.explainer.shap_values(data, check_additivity=False)
         
         self.feature_names = np.concatenate((self.bow_feature_names, self.meta_feature_names))
-        
-        print(self.feature_names)
-        
-        print(self.shap_values)
-        print(self.shap_values.shape)
-        # Visualize SHAP values for the first sample
-        print("SHAP Explanation for the first sample:")
-        shap.summary_plot(self.shap_values, data, feature_names=self.feature_names)
