@@ -7,7 +7,7 @@ import numpy as np
 class RandomForestTextClassifier:
     """Class to train and evaluate a RandomForest classifier for text classification."""
     
-    def __init__(self, n_estimators=100, random_state=42, train_text):
+    def __init__(self, train_text, n_estimators=100, random_state=42):
         self.n_estimators = n_estimators
         self.random_state = random_state
         self.clf = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
