@@ -13,7 +13,7 @@ class SHAPIndividual:
     def explain(self, data):
         
         # Compute SHAP values
-        shap_values = self.explainer.shap_values(data)
+        shap_values = self.explainer.shap_values(data, check_additivity=False)
         
         feature_names = np.concatenate((self.bow_feature_names, self.meta_feature_names))
         
