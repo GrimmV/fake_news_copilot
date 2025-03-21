@@ -3,6 +3,10 @@ from sklearn.ensemble import RandomForestClassifier
 from machine_learning.rf.text_feature_extractor import TextFeatureExtractor
 from sklearn.metrics import accuracy_score
 import numpy as np
+import os
+import pickle
+
+from config import use_cached_model
 
 class RandomForestTextClassifier:
     """Class to train and evaluate a RandomForest classifier for text classification."""
@@ -26,12 +30,24 @@ class RandomForestTextClassifier:
         
         return combined_features, labels
     
-    def train(self, text_data, labels):
-        """Train the RandomForest classifier."""
-        X, y = self.preprocess_data(text_data, labels)
+    def train(self, text_data, labels, cache_file: str = "model/model_rf.pkl"):
         
-        print(X.shape)
-        self.clf.fit(X, y)
+        # Check if cached file exists
+        if os.path.exists(cache_file) and use_cached_model:
+            with open(cache_file, "rb") as f:
+                print("Loading cached Model...")
+                model = pickle.load(f)
+                self.clf = model
+        else:
+            """Train the RandomForest classifier."""
+            X, y = self.preprocess_data(text_data, labels)
+            
+            self.clf.fit(X, y)
+            # Save processed DataFrame for future use
+            with open(cache_file, "wb") as f:
+                pickle.dump(self.clf, f)
+        
+
     
     def evaluate(self, text_data, labels):
         """Evaluate the classifier on test data."""

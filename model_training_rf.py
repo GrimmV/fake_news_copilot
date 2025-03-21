@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from machine_learning.rf.rf_model import RandomForestTextClassifier
 
-# Example usage
 if __name__ == "__main__":
     # Load training dataset
     dataset = "chengxuphd/liar2"
