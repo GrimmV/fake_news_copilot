@@ -13,12 +13,14 @@ class SHAPIndividual:
     def explain(self, data):
         
         # Compute SHAP values
-        shap_values = self.explainer.shap_values(data, check_additivity=False)
+        self.shap_values = self.explainer.shap_values(data, check_additivity=False)
         
-        feature_names = np.concatenate((self.bow_feature_names, self.meta_feature_names))
+        self.feature_names = np.concatenate((self.bow_feature_names, self.meta_feature_names))
         
-        print(shap_values)
-        print(shap_values.shape)
+        print(self.feature_names)
+        
+        print(self.shap_values)
+        print(self.shap_values.shape)
         # Visualize SHAP values for the first sample
         print("SHAP Explanation for the first sample:")
-        shap.summary_plot(shap_values, data, feature_names=feature_names)
+        shap.summary_plot(self.shap_values, data, feature_names=self.feature_names)
