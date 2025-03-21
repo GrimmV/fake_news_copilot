@@ -26,6 +26,7 @@ class RandomForestTextClassifier:
         meta_features = self.feature_extractor.extract_meta_features(text_data, name=name)
         
         print(bow_features.shape)
+        print(meta_features)
         print(meta_features.shape)
         
         # Combine features
