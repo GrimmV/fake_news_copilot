@@ -21,6 +21,5 @@ class SHAPIndividual:
         
         print(self.shap_values)
         print(self.shap_values.shape)
-        # Visualize SHAP values for the first sample
-        print("SHAP Explanation for the first sample:")
-        shap.summary_plot(self.shap_values, data, feature_names=self.feature_names)
+
+        
