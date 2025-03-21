@@ -19,9 +19,9 @@ class TextFeatureExtractor:
         """Extract bag-of-words features."""
         return self.vectorizer.transform(text_data).toarray()
     
-    def extract_meta_features(self, text_data):
+    def extract_meta_features(self, text_data, name = "train"):
         """Extract meta-information features like text length and sentiment."""
-        return self._prepare_data(text_data)
+        return self._prepare_data(text_data, name=name)
     
     
     def _prepare_data(self, text_data, cache_file: str = "processed_data.pkl", name = "train"):

@@ -17,13 +17,13 @@ class RandomForestTextClassifier:
         self.clf = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
         self.feature_extractor = TextFeatureExtractor(train_text)
     
-    def preprocess_data(self, text_data, labels):
+    def preprocess_data(self, text_data, labels, name = "train"):
         """Preprocess the data by extracting features and combining them."""
         # Extract bag-of-words features
         bow_features = self.feature_extractor.extract_bow_features(text_data)
         
         # Extract meta-information features
-        meta_features = self.feature_extractor.extract_meta_features(text_data)
+        meta_features = self.feature_extractor.extract_meta_features(text_data, name=name)
         
         print(bow_features.shape)
         print(meta_features.shape)
@@ -53,9 +53,9 @@ class RandomForestTextClassifier:
         
 
     
-    def evaluate(self, text_data, labels):
+    def evaluate(self, text_data, labels, name: str):
         """Evaluate the classifier on test data."""
-        X, y = self.preprocess_data(text_data, labels)
+        X, y = self.preprocess_data(text_data, labels, name)
         y_pred = self.clf.predict(X)
         accuracy = accuracy_score(y, y_pred)
         return accuracy
