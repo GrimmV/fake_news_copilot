@@ -25,6 +25,10 @@ class RandomForestTextClassifier:
         # Extract meta-information features
         meta_features = self.feature_extractor.extract_meta_features(text_data)
         
+        
+        print(bow_features.shape)
+        print(meta_features.shape)
+        
         # Combine features
         combined_features = np.hstack((bow_features, meta_features))
         
@@ -41,6 +45,7 @@ class RandomForestTextClassifier:
         else:
             """Train the RandomForest classifier."""
             X, y = self.preprocess_data(text_data, labels)
+        
             
             self.clf.fit(X, y)
             # Save processed DataFrame for future use
