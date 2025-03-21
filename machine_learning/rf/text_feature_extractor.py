@@ -31,7 +31,7 @@ class TextFeatureExtractor:
             with open(filename, "rb") as f:
                 print("Loading cached DataFrame...")
                 df = pickle.load(f)
-                print(df.head())
+                print(df.shape)
                 return df.to_numpy()
         
         print(f"Processing DataFrame '{name}' for the first time...")
@@ -49,8 +49,10 @@ class TextFeatureExtractor:
         
         df.drop(columns=["statement"], inplace=True)
         
+        print(df.shape)
         # Save processed DataFrame for future use
         with open(filename, "wb") as f:
+            print(df.shape)
             pickle.dump(df, f)
         
         return df.to_numpy()
