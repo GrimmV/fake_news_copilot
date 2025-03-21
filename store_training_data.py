@@ -42,8 +42,13 @@ if __name__ == "__main__":
     combined_features = np.hstack((bow_features, meta_features))
     
     predictions = model.predict(combined_features)
+    probas = model.predict_proba(combined_features)
+    proba_df = pd.DataFrame(probas, columns=[f"prob_class_{i}" for i in range(probas.shape[1])])
     
     train_raw["predictions"] = predictions
     
+    train_raw = pd.concat([train_raw, proba_df], axis=1)
+    
     print(train_raw.head())
+    train_raw.to_csv("data/basic_train.csv")
     
