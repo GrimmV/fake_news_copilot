@@ -18,5 +18,7 @@ if __name__ == "__main__":
     classifier.train(X_train, y_train)
     
     # Evaluate the classifier
-    accuracy = classifier.evaluate(X_test, y_test)
-    print(f'Accuracy: {accuracy:.2f}')
+    accuracy_train = classifier.evaluate(X_train, y_train)
+    accuracy_test = classifier.evaluate(X_test, y_test)
+    print(f'Accuracy in training: {accuracy_train:.2f}')
+    print(f'Accuracy in test data: {accuracy_test:.2f}')
