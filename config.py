@@ -5,15 +5,15 @@ numerical_cols = ["Lexical Diversity (TTR)", "Average Word Length", "Avg Syllabl
 
 # Caching
 use_cached_data = True
-use_cached_model = True
-resume_training = True
+use_cached_model = False
+resume_training = False
 
 # model hyperparameters
 lr = 2e-5
 weight_decay = 1e-3
 dropout = 0.3
-bert_layers_grad = 4
-num_epochs = 100
+bert_layers_grad = 0
+num_epochs = 1
 
 # storage
 
