@@ -23,7 +23,7 @@ class RandomForestTextClassifier:
         bow_features = self.feature_extractor.extract_bow_features(text_data)
         
         # Extract meta-information features
-        meta_features = self.feature_extractor.extract_meta_features(text_data, name=name)
+        meta_features, _ = self.feature_extractor.extract_meta_features(text_data, name=name)
         
         print(bow_features.shape)
         print(meta_features)
