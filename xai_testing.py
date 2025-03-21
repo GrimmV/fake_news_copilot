@@ -40,6 +40,9 @@ if __name__ == "__main__":
     # Combine features
     combined_features = np.hstack((bow_features, meta_features))
     
+    print(combined_features.shape)
+    print(combined_features[:5].shape)
+    
     model = _retrieve_model()
     
     shap_explainer = SHAPIndividual(model, bow_feature_names, meta_feature_names)
