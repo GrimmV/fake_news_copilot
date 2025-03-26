@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from text_feature_extractor import TextFeatureExtractor
+from utils.text_feature_extractor import TextFeatureExtractor
 
 
 def retrieve_data():

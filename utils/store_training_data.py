@@ -1,7 +1,7 @@
 import pandas as pd
 
-from retrieve_model import retrieve_model
-from retrieve_data import retrieve_data
+from utils.retrieve_model import retrieve_model
+from utils.retrieve_data import retrieve_data
     
 if __name__ == "__main__":
     
