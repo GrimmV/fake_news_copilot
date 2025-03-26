@@ -22,6 +22,7 @@ if __name__ == "__main__":
     proba_df = pd.DataFrame(probas, columns=[f"prob_class_{i}" for i in range(probas.shape[1])])
     
     train_raw["predictions"] = predictions
+    train_raw["new_labels"] = y_train
     
     train_raw = pd.concat([train_raw, proba_df], axis=1)
     
