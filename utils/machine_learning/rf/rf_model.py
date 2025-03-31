@@ -6,7 +6,7 @@ import numpy as np
 import os
 import pickle
 
-from config import use_cached_model
+from utils.config import use_cached_model
 
 class RandomForestTextClassifier:
     """Class to train and evaluate a RandomForest classifier for text classification."""
