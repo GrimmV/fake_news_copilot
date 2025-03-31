@@ -4,9 +4,9 @@ import os
 import pickle 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from utils.machine_learning.readability_scorer import ReadabilityScorer
-from utils.machine_learning.sentiment_model import SentimentModel
-from utils.config import use_cached_data
+from machine_learning.readability_scorer import ReadabilityScorer
+from machine_learning.sentiment_model import SentimentModel
+from config import use_cached_data
 
 class TextFeatureExtractor:
     """Class to extract features from text data."""
