@@ -14,8 +14,8 @@ def store_shap_data():
     dataset = datasets.load_dataset(dataset)
     train_raw = pd.DataFrame(dataset["train"])
 
-    X_train = train_raw["statements"].to_list()
-    y_train = train_raw["labels"].to_list()
+    X_train = train_raw["statement"].to_list()
+    y_train = train_raw["label"].to_list()
 
     data_retriever = DataRetriever(X_train)
     
