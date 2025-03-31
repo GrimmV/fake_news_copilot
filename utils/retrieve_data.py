@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from typing import List
 
-from utils.text_feature_extractor import TextFeatureExtractor
+from text_feature_extractor import TextFeatureExtractor
 
 class DataRetriever:
     
