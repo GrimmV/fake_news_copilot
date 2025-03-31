@@ -47,11 +47,14 @@ def store_shap_data():
         i_tokens = tokens[i]
         i_tokens = [token.lower() for token in i_tokens]
         pred = predictions[i]
-        explanations.append({})
+        explanations.append({
+            "prediction": pred,
+            "values": {}
+        })
         for j, elem in enumerate(shap_values):
             if combined_feature_names[j] in i_tokens or combined_feature_names[j] in meta_feature_names:
                 value_key = combined_feature_names[j]
-                explanations[-1][value_key] = elem[pred]
+                explanations[-1]["values"][value_key] = elem[pred]
             
     with open("data/shap.csv", "w") as f:
         json.dump(explanations, f, indent=4)
