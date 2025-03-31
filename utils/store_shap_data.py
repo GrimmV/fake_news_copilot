@@ -76,3 +76,6 @@ def _get_explainer(model, background_data, bow_feature_names, meta_feature_names
         pickle.dump(shap_explainer, f)
         
     return shap_explainer
+
+if __name__ == "__main__":
+    store_shap_data()
