@@ -3,10 +3,10 @@ import datasets
 import json
 import pickle
 
-from utils.retrieve_data import DataRetriever
-from utils.retrieve_model import retrieve_model
-from utils.xai.shap_individual import SHAPIndividual
-from utils.retrieve_shap_explainer import retrieve_shap_explainer
+from retrieve_data import DataRetriever
+from retrieve_model import retrieve_model
+from xai.shap_individual import SHAPIndividual
+from retrieve_shap_explainer import retrieve_shap_explainer
 
 def store_shap_data():
     
