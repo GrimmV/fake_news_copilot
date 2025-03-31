@@ -12,7 +12,7 @@ class DataRetriever:
         
         self.extractor = TextFeatureExtractor(X_train)
 
-    def  generate_input_data(self, X: List, y:List, name="train"):
+    def generate_input_data(self, X: List, y:List, name="train"):
         
         y_new = [self._relabel(elem) for elem in y]
 

@@ -1,5 +1,5 @@
 
-Starting environment or clean VM with e.g.:
+# Starting environment or clean VM with e.g.:
 
 sudo docker run -it --name fake_news --gpus=1 -p 8521:8888 nvidia/cuda:12.8.0-cudnn-devel-ubuntu24.04
 
@@ -28,3 +28,6 @@ python -m spacy download en_core_web_sm
 pip install datasets
 
 pip install notebook
+
+# How to work with this
+
