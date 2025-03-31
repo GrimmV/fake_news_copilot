@@ -1,8 +1,8 @@
 import pandas as pd
 import datasets
 
-from utils.retrieve_model import retrieve_model
-from utils.retrieve_data import DataRetriever
+from retrieve_model import retrieve_model
+from retrieve_data import DataRetriever
 
     
 if __name__ == "__main__":
