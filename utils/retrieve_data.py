@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from typing import List
 
-from utils.text_feature_extractor import TextFeatureExtractor
+from text_feature_extractor import TextFeatureExtractor
 
 class DataRetriever:
     
