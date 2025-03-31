@@ -31,3 +31,11 @@ pip install notebook
 
 # How to work with this
 
+Preprocess training data and train the model:
+
+```python model_training_rf.py```
+
+Store data with model predictions:
+
+```python utils/store_training_data.py```
+
