@@ -6,7 +6,7 @@ import pickle
 from retrieve_data import DataRetriever
 from retrieve_model import retrieve_model
 from xai.shap_individual import SHAPIndividual
-from retrieve_shap_explainer import retrieve_shap_explainer
+from retrieve_xai import XAIRetriever
 
 def store_shap_data():
     
@@ -16,6 +16,7 @@ def store_shap_data():
 
     X_train = train_raw["statement"].to_list()
     y_train = train_raw["label"].to_list()
+    elem_ids = train_raw["id"].to_list()
 
     data_retriever = DataRetriever(X_train)
     
@@ -47,7 +48,9 @@ def store_shap_data():
         i_tokens = tokens[i]
         i_tokens = [token.lower() for token in i_tokens]
         pred = predictions[i]
+        elem_id = elem_ids[i]
         explanations.append({
+            "id": elem_id,
             "prediction": pred,
             "values": {}
         })
@@ -63,8 +66,10 @@ def _get_explainer(model, background_data, bow_feature_names, meta_feature_names
     
     explainer_path = "model/shap_explainer.pkl"
     
+    xai_retriever = XAIRetriever()
+    
     if use_cache:
-        explainer = retrieve_shap_explainer()
+        explainer = xai_retriever.retrieve_shap_explainer()
         if explainer != None:
             return explainer
         
