@@ -38,7 +38,7 @@ class XAIRetriever:
         labels = self.labels_simple
         predictions = self.predictions
         
-        confusion = confusion_matrix(labels, predictions, normalize='true')
+        confusion = confusion_matrix(labels, predictions, normalize='true', labels=[0, 1, 2])
         confusion = confusion.tolist()
         
         with open(cache, "w") as f:
