@@ -16,6 +16,8 @@ class SimilarPredHandler:
         first_n_similar = self.similarity_handler.find_most_similar_phrases(query, n)
         
         for elem in first_n_similar:
+            if len(similars) > k:
+                break
             if elem["predictions"] == pred:
                 similars.append(elem)
         
