@@ -295,4 +295,5 @@ class XAIRetriever:
         
         full_df_path = "data/full_df.csv"
         if not os.path.exists(full_df_path):
+            print("Storing full dataframe")
             self.trained_df.to_csv(full_df_path)
