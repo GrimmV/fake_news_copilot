@@ -13,7 +13,7 @@ class SimilarityHandler:
 
         self.phrase_list = list(map(lambda x: x["statement"], phrases))
         self.phrase_ids = list(map(lambda x: x["id"], phrases))
-        self.phrase_preds = list(map(lambda x: x["predictions"], phrases))
+        self.phrase_preds = list(map(lambda x: float(x["predictions"]), phrases))
 
         self.phrase_embeddings = self.model.encode(self.phrase_list)
 
