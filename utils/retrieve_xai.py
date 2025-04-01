@@ -7,12 +7,12 @@ import datasets
 
 from sklearn.inspection import partial_dependence
 
-from xai.shap_individual import SHAPIndividual
-from xai.proximity_based.similarity_handler import SimilarityHandler
-from xai.proximity_based.similars import SimilarPredHandler
-from xai.proximity_based.counterfactuals import CounterfactualHandler
-from retrieve_data import DataRetriever
-from retrieve_model import retrieve_model
+from utils.xai.shap_individual import SHAPIndividual
+from utils.xai.proximity_based.similarity_handler import SimilarityHandler
+from utils.xai.proximity_based.similars import SimilarPredHandler
+from utils.xai.proximity_based.counterfactuals import CounterfactualHandler
+from utils.retrieve_data import DataRetriever
+from utils.retrieve_model import retrieve_model
 
 class XAIRetriever:
     
