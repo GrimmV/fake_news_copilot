@@ -13,7 +13,7 @@ class SimilarityHandler:
 
         self.phrase_list = list(map(lambda x: x["statement"], phrases))
         self.phrase_ids = list(map(lambda x: x["id"], phrases))
-        self.phrase_preds = list(map(lambda x: float(x["predictions"]), phrases))
+        self.phrase_preds = list(map(lambda x: x["predictions"], phrases))
 
         self.phrase_embeddings = self.model.encode(self.phrase_list)
 
@@ -33,7 +33,7 @@ class SimilarityHandler:
                 "id": self.phrase_ids[i],
                 "phrase": self.phrase_list[i],
                 "predictions": self.phrase_preds[i],
-                "score": similarities[i],
+                "score": float(similarities[i]),
             }
             for i in top_indices
         ]
@@ -72,5 +72,5 @@ class SimilarityHandler:
             "id": self.phrase_ids[idx],
             "phrase": self.phrase_list[idx],
             "predictions": self.phrase_preds[idx],
-            "score": similarities[idx],
+            "score": float(similarities[idx]),
         }
