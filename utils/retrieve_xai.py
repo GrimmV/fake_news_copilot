@@ -152,7 +152,10 @@ class XAIRetriever:
             for key, value in results.items():
                 tmp_list = list(value)
                 for i, elem in enumerate(tmp_list):
-                    tmp_list[i] = list(elem)
+                    tmp_list[i] = elem.tolist()
+                    # new_item_list = []
+                    # for item in tmp_list[i]:
+                    #     new_item_list.append(float(item))
                 results[key] = tmp_list
             
             print(results)
