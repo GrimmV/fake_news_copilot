@@ -60,10 +60,10 @@ class XAIRetriever:
         
         scores = {
             "accuracy": balanced_accuracy_score(labels, predictions),
-            "f1_score": f1_score(labels, predictions),
-            "precision": precision_score(labels, predictions),
-            "recall": recall_score(labels, predictions),
-            "roc_auc": roc_auc_score(labels, predictions)
+            "f1_score": f1_score(labels, predictions, average="weighted"),
+            "precision": precision_score(labels, predictions, average="weighted"),
+            "recall": recall_score(labels, predictions, average="weighted"),
+            "roc_auc": roc_auc_score(labels, predictions, average="weighted")
         }
         
         with open(cache, "w") as f:
