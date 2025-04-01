@@ -148,10 +148,14 @@ class XAIRetriever:
         for i, feature_name in enumerate(self.meta_feature_names):
             results = partial_dependence(self.model, self.combined_features, [n_bow_features + i], grid_resolution=grid_resolution)
             
+            print(partial_dependences)
+            
             partial_dependences.append({
                 "feature": feature_name,
-                "partial_dependence": results
+                "partial_dependence": dict(results)
             })
+            
+            print(partial_dependences)
                         
         with open(cache, "w") as f:
             json.dump(partial_dependences, f, indent=4)
