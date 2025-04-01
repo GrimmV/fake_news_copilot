@@ -7,6 +7,8 @@ import datasets
 from sklearn.inspection import partial_dependence
 from sklearn.inspection import permutation_importance
 
+from sklearn.metrics import balanced_accuracy_score, f1_score, precision, recall, roc_auc_score, confusion_matrix
+
 from utils.xai.shap_individual import SHAPIndividual
 from utils.xai.proximity_based.similarity_handler import SimilarityHandler
 from utils.xai.proximity_based.similars import SimilarPredHandler
@@ -21,6 +23,54 @@ class XAIRetriever:
         self._curate_initial_data()
         self.model = retrieve_model()
         self.similarity_handler = SimilarityHandler(self.trained_df.to_dict("records"))
+    
+    
+    def retrieve_confusion(self, use_cache=True):
+        
+        cache = "data/confusion.csv"
+
+        if os.path.exists(cache) and use_cache:
+            with open(cache, "rb") as f:
+                print("Loading cached confusion matrix...")
+                shap_explainer = json.load(f)
+                return shap_explainer
+            
+        labels = self.labels_simple
+        predictions = self.predictions
+        
+        confusion = confusion_matrix(labels, predictions, normalize=True)
+        
+        with open(cache, "w") as f:
+            json.dump(confusion, f, indent=4)
+
+        return confusion
+    
+    def retrieve_metrics(self, use_cache=True):
+        
+        cache = "data/metrics.csv"
+
+        if os.path.exists(cache) and use_cache:
+            with open(cache, "rb") as f:
+                print("Loading cached metric scores...")
+                shap_explainer = json.load(f)
+                return shap_explainer
+            
+        labels = self.labels_simple
+        predictions = self.predictions
+        
+        scores = {
+            "accuracy": balanced_accuracy_score(labels, predictions),
+            "f1_score": f1_score(labels, predictions),
+            "precision": precision(labels, predictions),
+            "recall": recall(labels, predictions),
+            "roc_auc": roc_auc_score(labels, predictions)
+        }
+        
+        with open(cache, "w") as f:
+            json.dump(scores, f, indent=4)
+
+        return scores
+        
 
     def retrieve_feature_importance(self, use_cache=True):
 
