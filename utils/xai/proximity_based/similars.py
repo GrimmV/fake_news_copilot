@@ -12,7 +12,7 @@ class SimilarPredHandler:
         similars = []
         
         # initially take the 10 most similar phrases
-        n = 10
+        n = 20
         first_n_similar = self.similarity_handler.find_most_similar_phrases(query, n)
         
         for elem in first_n_similar:
@@ -20,9 +20,9 @@ class SimilarPredHandler:
                 similars.append(elem)
         
         # if number of counterfactuals is smaller than 3, keep going.
-        while len(similars) < k:
-            elem = self.similarity_handler.find_nth_most_similar_phrase(query, n)
-            if elem["predictions"] == pred:
-                similars.append(elem)
+        # while len(similars) < k:
+        #     elem = self.similarity_handler.find_nth_most_similar_phrase(query, n)
+        #     if elem["predictions"] == pred:
+        #         similars.append(elem)
             
         return similars
