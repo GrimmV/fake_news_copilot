@@ -21,7 +21,7 @@ class SimilarPredHandler:
         
         # if number of counterfactuals is smaller than 3, keep going.
         while len(similars) < k:
-            self.similarity_handler.find_nth_most_similar_phrase(n)
+            self.similarity_handler.find_nth_most_similar_phrase(query, n)
             n += 1
             
         return similars

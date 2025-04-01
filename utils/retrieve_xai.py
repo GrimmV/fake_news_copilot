@@ -59,7 +59,7 @@ class XAIRetriever:
         counterfactuals_handler = CounterfactualHandler(self.similarity_handler)
         counterfactuals = []
         for i, statement in enumerate(self.statements):
-            counterfactual_datapoints = counterfactuals_handler.find_similars(statement, self.predictions[i])
+            counterfactual_datapoints = counterfactuals_handler.find_counterfactuals(statement, self.predictions[i])
             counterfactuals.append({
                 "id": self.ids[i],
                 "counterfactuals": counterfactual_datapoints
