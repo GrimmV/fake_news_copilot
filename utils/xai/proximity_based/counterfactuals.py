@@ -16,7 +16,7 @@ class CounterfactualHandler:
         first_n_similar = self.similarity_handler.find_most_similar_phrases(query, n)
         
         for elem in first_n_similar:
-            if elem["pred"] != pred:
+            if elem["predictions"] != pred:
                 counterfactuals.append(elem)
         
         # if number of counterfactuals is smaller than 3, keep going.
