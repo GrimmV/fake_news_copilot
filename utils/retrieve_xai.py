@@ -19,7 +19,7 @@ class XAIRetriever:
     def __init__(self):
         self._curate_initial_data()
         self.model = retrieve_model()
-        self.similarity_handler = SimilarityHandler(self.statements)
+        self.similarity_handler = SimilarityHandler(self.trained_df)
         
     def retrieve_similars(self, use_cache=True):
         

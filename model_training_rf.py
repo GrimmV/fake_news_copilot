@@ -1,6 +1,6 @@
 import datasets
 import pandas as pd
-from machine_learning.rf.rf_model import RandomForestTextClassifier
+from utils.machine_learning.rf.rf_model import RandomForestTextClassifier
 from utils.retrieve_data import DataRetriever
 
 if __name__ == "__main__":
