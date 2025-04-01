@@ -40,7 +40,6 @@ class XAIRetriever:
                 "similars": similar_datapoints
             })
             print(self.ids[i])
-            break
             
         with open(cache, "w") as f:
             json.dump(similars, f, indent=4)
@@ -66,6 +65,7 @@ class XAIRetriever:
                 "id": self.ids[i],
                 "counterfactuals": counterfactual_datapoints
             })
+            print(self.ids[i])
             
         with open(cache, "w") as f:
             json.dump(counterfactuals, f, indent=4)
