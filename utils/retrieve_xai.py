@@ -7,7 +7,7 @@ import datasets
 from sklearn.inspection import partial_dependence
 from sklearn.inspection import permutation_importance
 
-from sklearn.metrics import balanced_accuracy_score, f1_score, precision, recall, roc_auc_score, confusion_matrix
+from sklearn.metrics import balanced_accuracy_score, f1_score, precision_score, recall_score, roc_auc_score, confusion_matrix
 
 from utils.xai.shap_individual import SHAPIndividual
 from utils.xai.proximity_based.similarity_handler import SimilarityHandler
@@ -61,8 +61,8 @@ class XAIRetriever:
         scores = {
             "accuracy": balanced_accuracy_score(labels, predictions),
             "f1_score": f1_score(labels, predictions),
-            "precision": precision(labels, predictions),
-            "recall": recall(labels, predictions),
+            "precision": precision_score(labels, predictions),
+            "recall": recall_score(labels, predictions),
             "roc_auc": roc_auc_score(labels, predictions)
         }
         
