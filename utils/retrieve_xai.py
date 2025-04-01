@@ -63,7 +63,7 @@ class XAIRetriever:
             "f1_score": f1_score(labels, predictions, average="weighted"),
             "precision": precision_score(labels, predictions, average="weighted"),
             "recall": recall_score(labels, predictions, average="weighted"),
-            "roc_auc": roc_auc_score(labels, predictions, average="weighted")
+            "roc_auc": roc_auc_score(labels, predictions, average="weighted", multi_class="ovo")
         }
         
         with open(cache, "w") as f:
