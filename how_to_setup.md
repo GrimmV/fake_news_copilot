@@ -17,6 +17,7 @@ source .venv/bin/activate
 
 Abhängigkeiten:
 
+```
 pip install pandas
 pip install torch
 pip install transformers
@@ -26,6 +27,11 @@ pip install spacy
 pip install nltk
 python -m spacy download en_core_web_sm
 pip install datasets
+```
+
+For sentence similarity: 
+
+`pip install sentence-transformers`
 
 pip install notebook
 

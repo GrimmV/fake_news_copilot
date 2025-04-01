@@ -1,5 +1,5 @@
 
-from xai.proximity_based.similarity_handler import SimilarityHandler
+from utils.xai.proximity_based.similarity_handler import SimilarityHandler
 
 class SimilarPredHandler:
     
