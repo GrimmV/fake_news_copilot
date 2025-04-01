@@ -150,7 +150,10 @@ class XAIRetriever:
             
             # Convert ndarrays to python list
             for key, value in results.items():
-                results[key] = list(value)
+                tmp_list = list(value)
+                for i, elem in enumerate(tmp_list):
+                    tmp_list[i] = list(elem)
+                results[key] = tmp_list
             
             print(results)
             
