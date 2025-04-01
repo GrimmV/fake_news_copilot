@@ -39,6 +39,7 @@ class XAIRetriever:
         predictions = self.predictions
         
         confusion = confusion_matrix(labels, predictions, normalize='true')
+        confusion = confusion.tolist()
         
         with open(cache, "w") as f:
             json.dump(confusion, f, indent=4)
