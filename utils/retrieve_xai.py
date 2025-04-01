@@ -58,12 +58,14 @@ class XAIRetriever:
         labels = self.labels_simple
         predictions = self.predictions
         
+        probas = self.model.predict_proba(self.combined_features)
+        
         scores = {
             "accuracy": balanced_accuracy_score(labels, predictions),
             "f1_score": f1_score(labels, predictions, average="weighted"),
             "precision": precision_score(labels, predictions, average="weighted"),
             "recall": recall_score(labels, predictions, average="weighted"),
-            "roc_auc": roc_auc_score(labels, predictions, average="weighted", multi_class="ovo")
+            "roc_auc": roc_auc_score(labels, probas, average="weighted", multi_class="ovr")
         }
         
         with open(cache, "w") as f:
