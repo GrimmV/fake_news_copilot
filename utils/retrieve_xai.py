@@ -292,3 +292,7 @@ class XAIRetriever:
         self.trained_df = pd.concat([self.trained_df, meta_df], axis=1)
         print(self.trained_df)
         self.extractor = data_retriever.extractor
+        
+        full_df_path = "data/full_df.csv"
+        if not os.path.exists(full_df_path):
+            self.trained_df.to_csv(full_df_path)
