@@ -39,6 +39,7 @@ class XAIRetriever:
                 "id": self.ids[i],
                 "similars": similar_datapoints
             })
+            print(self.ids[i])
             
         with open(cache, "w") as f:
             json.dump(similars, f, indent=4)
