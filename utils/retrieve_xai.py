@@ -288,4 +288,7 @@ class XAIRetriever:
         ) = data_retriever.generate_input_data(self.statements, self.labels)
         self.trained_df = data_retriever.retrieve_trained_data()
         self.predictions = self.trained_df["predictions"].to_list()
+        meta_df = pd.DataFrame(self.meta_features, columns=self.meta_feature_names)
+        self.trained_df = pd.concat([train_raw, meta_df], axis=1)
+        print(self.trained_df)
         self.extractor = data_retriever.extractor
