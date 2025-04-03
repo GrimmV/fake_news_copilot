@@ -1,0 +1,29 @@
+{
+    "class_0": {
+        "Lexical Diversity (TTR)": 0.23,
+        "Average Word Length": 0.08,
+        "Avg Syllables per Word": 0.06,
+        "Difficult Word Ratio": 0.19,
+        "Dependency Depth": 0.11,
+        "Length": 0.28,
+        "sentiment": 0.05
+    },
+    "class_1": {
+        "Lexical Diversity (TTR)": 0.19,
+        "Average Word Length": 0.11,
+        "Avg Syllables per Word": 0.08,
+        "Difficult Word Ratio": 0.13,
+        "Dependency Depth": 0.1,
+        "Length": 0.31,
+        "sentiment": 0.07
+    },
+    "class_2": {
+        "Lexical Diversity (TTR)": 0.21,
+        "Average Word Length": 0.12,
+        "Avg Syllables per Word": 0.12,
+        "Difficult Word Ratio": 0.18,
+        "Dependency Depth": 0.1,
+        "Length": 0.18,
+        "sentiment": 0.09
+    }
+}
