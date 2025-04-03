@@ -7,7 +7,14 @@ import datasets
 from sklearn.inspection import partial_dependence
 from sklearn.inspection import permutation_importance
 
-from sklearn.metrics import balanced_accuracy_score, f1_score, precision_score, recall_score, roc_auc_score, confusion_matrix
+from sklearn.metrics import (
+    balanced_accuracy_score,
+    f1_score,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+    confusion_matrix,
+)
 
 from utils.xai.shap_individual import SHAPIndividual
 from utils.xai.proximity_based.similarity_handler import SimilarityHandler
@@ -23,10 +30,9 @@ class XAIRetriever:
         self._curate_initial_data()
         self.model = retrieve_model()
         self.similarity_handler = SimilarityHandler(self.trained_df.to_dict("records"))
-    
-    
+
     def retrieve_confusion(self, use_cache=True):
-        
+
         cache = "data/confusion.csv"
 
         if os.path.exists(cache) and use_cache:
@@ -34,20 +40,22 @@ class XAIRetriever:
                 print("Loading cached confusion matrix...")
                 shap_explainer = json.load(f)
                 return shap_explainer
-            
+
         labels = self.labels_simple
         predictions = self.predictions
-        
-        confusion = confusion_matrix(labels, predictions, normalize='true', labels=[0, 1, 2])
+
+        confusion = confusion_matrix(
+            labels, predictions, normalize="true", labels=[0, 1, 2]
+        )
         confusion = confusion.tolist()
-        
+
         with open(cache, "w") as f:
             json.dump(confusion, f, indent=4)
 
         return confusion
-    
+
     def retrieve_metrics(self, use_cache=True):
-        
+
         cache = "data/metrics.csv"
 
         if os.path.exists(cache) and use_cache:
@@ -55,25 +63,26 @@ class XAIRetriever:
                 print("Loading cached metric scores...")
                 shap_explainer = json.load(f)
                 return shap_explainer
-            
+
         labels = self.labels_simple
         predictions = self.predictions
-        
+
         probas = self.model.predict_proba(self.combined_features)
-        
+
         scores = {
             "accuracy": balanced_accuracy_score(labels, predictions),
             "f1_score": f1_score(labels, predictions, average="weighted"),
             "precision": precision_score(labels, predictions, average="weighted"),
             "recall": recall_score(labels, predictions, average="weighted"),
-            "roc_auc": roc_auc_score(labels, probas, average="weighted", multi_class="ovr")
+            "roc_auc": roc_auc_score(
+                labels, probas, average="weighted", multi_class="ovr"
+            ),
         }
-        
+
         with open(cache, "w") as f:
             json.dump(scores, f, indent=4)
 
         return scores
-        
 
     def retrieve_feature_importance(self, use_cache=True):
 
@@ -85,31 +94,33 @@ class XAIRetriever:
                 shap_explainer = json.load(f)
                 return shap_explainer
 
-        r = permutation_importance(self.model, self.combined_features, self.labels_simple, n_repeats=30, random_state=0)
-        
-        importances = {
-            "meta": {},
-            "bow": {}
-        }
+        r = permutation_importance(
+            self.model,
+            self.combined_features,
+            self.labels_simple,
+            n_repeats=30,
+            random_state=0,
+        )
+
+        importances = {"meta": {}, "bow": {}}
         n_bow_features = len(self.bow_feature_names)
-        
+
         for i in r.importances_mean:
             if i < n_bow_features:
                 importances["bow"][self.bow_feature_names[i]] = {
                     "mean": r.importances_mean[i],
-                    "std": r.importances_std[i]
+                    "std": r.importances_std[i],
                 }
             else:
                 importances["meta"][self.meta_feature_names[i - n_bow_features]] = {
                     "mean": r.importances_mean[i],
-                    "std": r.importances_std[i]
+                    "std": r.importances_std[i],
                 }
-        
+
         with open(cache, "w") as f:
             json.dump(importances, f, indent=4)
 
         return importances
-            
 
     def retrieve_similars(self, use_cache=True):
 
@@ -209,7 +220,8 @@ class XAIRetriever:
             i_tokens = [token.lower() for token in i_tokens]
             pred = self.predictions[i]
             elem_id = self.ids[i]
-            explanations.append({"id": elem_id, "prediction": pred, "values": {}})
+            statement = self.statements[i]
+            explanations.append({"id": elem_id, "prediction": pred, "statement": statement, "values": {}})
             for j, elem in enumerate(shap_values):
                 if (
                     combined_feature_names[j] in i_tokens
@@ -292,7 +304,7 @@ class XAIRetriever:
         self.trained_df = pd.concat([self.trained_df, meta_df], axis=1)
         print(self.trained_df)
         self.extractor = data_retriever.extractor
-        
+
         full_df_path = "data/full_df.csv"
         if not os.path.exists(full_df_path):
             print("Storing full dataframe")

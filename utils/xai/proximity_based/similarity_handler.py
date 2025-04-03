@@ -33,7 +33,7 @@ class SimilarityHandler:
                 "id": self.phrase_ids[i],
                 "phrase": self.phrase_list[i],
                 "predictions": self.phrase_preds[i],
-                "score": float(f"{similarities[i]:.4f}"),
+                "similarity": float(f"{similarities[i]:.4f}"),
             }
             for i in top_indices
         ]
@@ -72,5 +72,5 @@ class SimilarityHandler:
             "id": self.phrase_ids[idx],
             "phrase": self.phrase_list[idx],
             "predictions": self.phrase_preds[idx],
-            "score": float(f"{similarities[idx]:.4f}"),
+            "similarity": float(f"{similarities[idx]:.4f}"),
         }
