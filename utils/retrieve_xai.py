@@ -205,7 +205,7 @@ class XAIRetriever:
                 return explanations
 
         explainer = self.retrieve_shap_explainer(use_cache)
-        explainer.explain(self.combined_features)
+        explainer.explain(self.combined_features[:100])
 
         tokens = list(map(self.extractor.vectorizer.build_tokenizer(), self.statements))
         combined_feature_names = list(self.bow_feature_names) + list(
