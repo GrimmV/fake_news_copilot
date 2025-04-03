@@ -109,7 +109,10 @@ class XAIRetriever:
         
         for elem in shaps:
             for feature_name in self.meta_feature_names:
-                shap_sums[f"class_{elem["prediction"]}"][feature_name] += abs(elem["values"][feature_name])
+                if feature_name in shap_sums[f"class_{elem["prediction"]}"]:
+                    shap_sums[f"class_{elem["prediction"]}"][feature_name] += abs(elem["values"][feature_name])
+                else:
+                    shap_sums[f"class_{elem["prediction"]}"][feature_name] = abs(elem["values"][feature_name])
 
 
         with open(cache, "w") as f:
