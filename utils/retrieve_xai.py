@@ -228,7 +228,7 @@ class XAIRetriever:
                     or combined_feature_names[j] in self.meta_feature_names
                 ):
                     value_key = combined_feature_names[j]
-                    explanations[-1]["values"][value_key] = elem[pred]
+                    explanations[-1]["values"][value_key] = float("{:.4f}".format(elem[pred]))
             print(explanations)
             break
 
