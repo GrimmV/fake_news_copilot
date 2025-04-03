@@ -205,7 +205,7 @@ class XAIRetriever:
                 return explanations
 
         explainer = self.retrieve_shap_explainer(use_cache)
-        explainer.explain(self.combined_features[:100])
+        explainer.explain(self.combined_features)
 
         tokens = list(map(self.extractor.vectorizer.build_tokenizer(), self.statements))
         combined_feature_names = list(self.bow_feature_names) + list(
@@ -229,8 +229,6 @@ class XAIRetriever:
                 ):
                     value_key = combined_feature_names[j]
                     explanations[-1]["values"][value_key] = float("{:.4f}".format(elem[pred]))
-            print(explanations)
-            break
 
         with open(cache, "w") as f:
             json.dump(explanations, f, indent=4)
