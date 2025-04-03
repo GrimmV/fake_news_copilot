@@ -204,7 +204,7 @@ class XAIRetriever:
                 explanations = json.load(f)
                 return explanations
 
-        explainer = self.retrieve_shap_explainer()
+        explainer = self.retrieve_shap_explainer(use_cache)
         explainer.explain(self.combined_features)
 
         tokens = list(map(self.extractor.vectorizer.build_tokenizer(), self.statements))
