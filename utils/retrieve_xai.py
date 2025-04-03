@@ -87,40 +87,35 @@ class XAIRetriever:
     def retrieve_feature_importance(self, use_cache=True):
 
         cache = "data/feature_importance.csv"
+        shaps = "data/shap.csv"
+        
+        if os.path.exists(shaps):
+            with open(shaps, "rb") as f:
+                shaps = json.load(f)
+        else:
+            raise FileNotFoundError("Please generate shap values first.")
 
         if os.path.exists(cache) and use_cache:
             with open(cache, "rb") as f:
                 print("Loading cached feature importance...")
-                shap_explainer = json.load(f)
-                return shap_explainer
+                feature_importances = json.load(f)
+                return feature_importances
 
-        r = permutation_importance(
-            self.model,
-            self.combined_features,
-            self.labels_simple,
-            n_repeats=30,
-            random_state=0,
-        )
+        shap_sums = {
+            "class_0": {},
+            "class_1": {},
+            "class_2": {},
+        }
+        
+        for elem in shaps:
+            for feature_name in self.meta_feature_names:
+                shap_sums[f"class_{elem["prediction"]}"][feature_name] += abs(elem["values"][feature_name])
 
-        importances = {"meta": {}, "bow": {}}
-        n_bow_features = len(self.bow_feature_names)
-
-        for i in r.importances_mean:
-            if i < n_bow_features:
-                importances["bow"][self.bow_feature_names[i]] = {
-                    "mean": r.importances_mean[i],
-                    "std": r.importances_std[i],
-                }
-            else:
-                importances["meta"][self.meta_feature_names[i - n_bow_features]] = {
-                    "mean": r.importances_mean[i],
-                    "std": r.importances_std[i],
-                }
 
         with open(cache, "w") as f:
-            json.dump(importances, f, indent=4)
+            json.dump(shap_sums, f, indent=4)
 
-        return importances
+        return shap_sums
 
     def retrieve_similars(self, use_cache=True):
 
