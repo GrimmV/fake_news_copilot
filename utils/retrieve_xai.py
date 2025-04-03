@@ -229,6 +229,8 @@ class XAIRetriever:
                 ):
                     value_key = combined_feature_names[j]
                     explanations[-1]["values"][value_key] = elem[pred]
+                print(explanations)
+                break
 
         with open(cache, "w") as f:
             json.dump(explanations, f, indent=4)
