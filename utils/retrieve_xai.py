@@ -114,11 +114,19 @@ class XAIRetriever:
                 else:
                     shap_sums[f"class_{elem["prediction"]}"][feature_name] = abs(elem["values"][feature_name])
 
+        # Create a new dictionary with values converted to percentages and rounded to 2 decimals
+        percentages = {
+            class_name: {
+                metric: round(value / 100, 4)  # First divide by 100 to get fraction, then round to 4 decimals to ensure 2 decimal percentage
+                for metric, value in metrics.items()
+            }
+            for class_name, metrics in shap_sums.items()
+        }
 
         with open(cache, "w") as f:
-            json.dump(shap_sums, f, indent=4)
+            json.dump(percentages, f, indent=4)
 
-        return shap_sums
+        return percentages
 
     def retrieve_similars(self, use_cache=True):
 
