@@ -11,7 +11,7 @@ from utils.config import use_cached_model
 class RandomForestTextClassifier:
     """Class to train and evaluate a RandomForest classifier for text classification."""
     
-    def __init__(self, n_estimators=100, random_state=42, max_depth=50):
+    def __init__(self, n_estimators=100, random_state=42, max_depth=45):
         self.n_estimators = n_estimators
         self.random_state = random_state
         self.clf = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state, max_depth=max_depth)
@@ -29,7 +29,7 @@ class RandomForestTextClassifier:
         else:
             """Train the RandomForest classifier."""
             self.clf.fit(X, y)
-            # Save processed DataFrame for future use
+            # Save processed Model for future use
             with open(cache, "wb") as f:
                 pickle.dump(self.clf, f)
         
