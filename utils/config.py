@@ -5,7 +5,7 @@ numerical_cols = ["Lexical Diversity (TTR)", "Average Word Length", "Avg Syllabl
 
 # Caching
 use_cached_data = True
-use_cached_model = False
+use_cached_model = True
 resume_training = False
 
 # model hyperparameters
