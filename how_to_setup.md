@@ -33,7 +33,7 @@ For sentence similarity:
 
 `pip install sentence-transformers`
 
-pip install notebook
+`pip install notebook`
 
 # How to work with this
 
@@ -45,3 +45,6 @@ Store data with model predictions:
 
 ```python utils/store_training_data.py```
 
+Run python REPL:
+
+`python`

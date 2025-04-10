@@ -144,7 +144,7 @@ class XAIRetriever:
             similar_datapoints = similar_pred_handler.find_similars(
                 statement, self.predictions[i]
             )
-            similars.append({"id": self.ids[i], "similars": similar_datapoints})
+            similars.append({"id": self.ids[i], "elems": similar_datapoints})
             print(self.ids[i])
 
         with open(cache, "w") as f:
@@ -169,7 +169,7 @@ class XAIRetriever:
                 statement, self.predictions[i]
             )
             counterfactuals.append(
-                {"id": self.ids[i], "counterfactuals": counterfactual_datapoints}
+                {"id": self.ids[i], "elems": counterfactual_datapoints}
             )
             print(self.ids[i])
 
