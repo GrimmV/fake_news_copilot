@@ -15,7 +15,7 @@ python3 -m venv .venv
 cd fake_news_copilot
 source .venv/bin/activate
 
-Abhängigkeiten:
+Dependencies:
 
 ```
 pip install pandas
@@ -45,6 +45,12 @@ Store data with model predictions:
 
 ```python utils/store_training_data.py```
 
-Run python REPL:
+Run python REPL to store all XAI and other relevant Data:
 
 `python`
+
+`from utils.retrieve_xai import XAIRetriever`
+`retriever = XAIRetriever()`
+`retriever.retrieve_confusion()`
+`for all methods in XAIRetriever:`
+`retriever. ... `

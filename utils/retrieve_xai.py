@@ -178,7 +178,7 @@ class XAIRetriever:
 
         return counterfactuals
 
-    def retrieve_shap_explainer(self, use_cache=True) -> SHAPIndividual:
+    def _retrieve_shap_explainer(self, use_cache=True) -> SHAPIndividual:
 
         cache = "model/shap_explainer.pkl"
 
@@ -210,7 +210,7 @@ class XAIRetriever:
                 explanations = json.load(f)
                 return explanations
 
-        explainer = self.retrieve_shap_explainer(use_cache)
+        explainer = self._retrieve_shap_explainer(use_cache)
         explainer.explain(self.combined_features)
 
         tokens = list(map(self.extractor.vectorizer.build_tokenizer(), self.statements))
