@@ -15,7 +15,7 @@ python3 -m venv .venv
 cd fake_news_copilot
 source .venv/bin/activate
 
-Dependencies:
+Dependencies (Or do try `pip install -r requirements.txt`):
 
 ```
 pip install pandas
