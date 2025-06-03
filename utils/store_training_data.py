@@ -27,6 +27,7 @@ if __name__ == "__main__":
     
     model = retrieve_model()
     
+    # Train the model
     predictions = model.predict(combined_features)
     probas = model.predict_proba(combined_features)
     proba_df = pd.DataFrame(probas, columns=[f"prob_class_{i}" for i in range(probas.shape[1])])

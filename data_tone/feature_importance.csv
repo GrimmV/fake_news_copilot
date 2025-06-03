@@ -1,0 +1,38 @@
+{
+    "class_0": {
+        "us_vs_them_lang": 0.04,
+        "exaggerated_uncertainty": 0.1,
+        "source_quality": 0.38,
+        "victim_villain_language": 0.06,
+        "black_and_white_language": 0.02,
+        "dehumanization": 0.07,
+        "emotionality": 0.07,
+        "reading_difficulty": 0.08,
+        "sentiment": 0.05,
+        "polarization": 0.13
+    },
+    "class_1": {
+        "us_vs_them_lang": 0.04,
+        "exaggerated_uncertainty": 0.13,
+        "source_quality": 0.15,
+        "victim_villain_language": 0.09,
+        "black_and_white_language": 0.04,
+        "dehumanization": 0.03,
+        "emotionality": 0.11,
+        "reading_difficulty": 0.1,
+        "sentiment": 0.1,
+        "polarization": 0.21
+    },
+    "class_2": {
+        "us_vs_them_lang": 0.04,
+        "exaggerated_uncertainty": 0.2,
+        "source_quality": 0.18,
+        "victim_villain_language": 0.04,
+        "black_and_white_language": 0.06,
+        "dehumanization": 0.03,
+        "emotionality": 0.12,
+        "reading_difficulty": 0.09,
+        "sentiment": 0.05,
+        "polarization": 0.18
+    }
+}
